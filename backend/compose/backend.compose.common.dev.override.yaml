@@ -4,7 +4,9 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - './androxine:/app/androxine'
+      - '../androxine:/app/androxine'
+    env_file:
+      - ../.env.dev
   
   db:
     ports: 

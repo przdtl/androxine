@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /app
+cd /app/androxine
 
 python manage.py makemigrations
 python manage.py migrate --noinput

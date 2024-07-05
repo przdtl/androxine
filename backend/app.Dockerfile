@@ -2,14 +2,15 @@ FROM python:3.11-alpine
 
 WORKDIR /app
 
+ENV PYTHONPATH=/app/androxine
+
 COPY ./requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./manage.py .
 COPY ./androxine ./androxine
 
-RUN mkdir staticfiles
+RUN mkdir -p ./androxine/staticfiles
 
 COPY ./script.sh ./
 RUN chmod +x /app/script.sh
