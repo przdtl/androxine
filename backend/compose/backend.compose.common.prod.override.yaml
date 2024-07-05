@@ -1,0 +1,20 @@
+services:
+  backend_nginx:
+    build: ../nginx
+    container_name: AndroxineBackendNginx
+    volumes:
+      - static_volume:/app/staticfiles
+    ports:
+      - '80:80'
+    depends_on:
+      - drf_app
+
+  drf_app:
+    command: gunicorn androxine.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/app/staticfiles
+    expose:
+      - 8000
+
+volumes: 
+  static_volume:

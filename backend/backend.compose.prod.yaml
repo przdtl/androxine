@@ -1,0 +1,4 @@
+include:
+  - path:
+    - ./compose/backend.compose.common.yaml
+    - ./compose/backend.compose.common.prod.override.yaml

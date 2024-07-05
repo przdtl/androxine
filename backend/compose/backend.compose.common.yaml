@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  drf_app:
+    build:
+      context: ../
+      dockerfile: app.Dockerfile 
+    container_name: AndroxineBackendDjango
+    env_file:
+      - ../.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    container_name: AndroxineBackendPostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d androxine_db -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1111
+      - POSTGRES_DB=androxine_db
+
+  # redis_broker:
+  #   image: redis:alpine
+  #   container_name: AndroxineBackendRedisBroker
+
+  # celery_worker:
+  #   image: celery:4
+  #   container_name: AndroxineBackendCeleryWorker
+
+  # elasticsearch:
+  #   image: elasticsearch:8.14.0
+  #   container_name: AndroxineBackendElasticsearch
+
+volumes:
+  postgres_data:
