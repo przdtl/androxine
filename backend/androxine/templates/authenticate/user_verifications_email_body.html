@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div>
+        Hello, {{ username }}
+        <br>
+        Please activate your account: http://{{ domain }}{% url 'activate' uid=uid token=token %}
+    </div>
+</body>
+</html>
