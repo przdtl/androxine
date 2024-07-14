@@ -1,13 +1,22 @@
 services:
   drf_app:
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c " ../scripts/django.sh && 
+              python manage.py runserver 0.0.0.0:8000"
+
     ports:
-      - '8000:8000'
+      - "8000:8000"
     volumes:
-      - '../androxine:/app/androxine'
+      - "../androxine:/app/androxine"
     env_file:
       - ../.env.dev
-  
+
   db:
-    ports: 
-      - '5555:5432'
+    ports:
+      - "5555:5432"
+
+  celery_worker:
+    volumes:
+      - "../androxine:/app/androxine"
+    env_file:
+      - ../.env.dev

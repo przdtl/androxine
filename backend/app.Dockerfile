@@ -12,7 +12,9 @@ COPY ./androxine ./androxine
 
 RUN mkdir -p ./androxine/staticfiles
 
-COPY ./script.sh ./
-RUN chmod +x /app/script.sh
+COPY ./entrypoint.sh ./
+COPY ./scripts ./scripts
 
-ENTRYPOINT ["sh", "./script.sh"]
+RUN chmod +x ./entrypoint.sh -R ./scripts 
+
+ENTRYPOINT ["sh", "./entrypoint.sh"]

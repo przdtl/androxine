@@ -1,14 +1,17 @@
-version: '3'
+version: "3"
 
 services:
   drf_app:
     build:
       context: ../
-      dockerfile: app.Dockerfile 
+      dockerfile: app.Dockerfile
     container_name: AndroxineBackendDjango
     depends_on:
       db:
         condition: service_healthy
+      celery_redis_broker:
+        condition: service_started
+    restart: always
 
   db:
     image: postgres:15
@@ -24,14 +27,24 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1111
       - POSTGRES_DB=androxine_db
+    restart: always
 
-  # redis_broker:
-  #   image: redis:alpine
-  #   container_name: AndroxineBackendRedisBroker
+  celery_redis_broker:
+    image: redis:alpine
+    container_name: AndroxineBackendRedisBroker
+    expose:
+      - 6379
+    restart: always
 
-  # celery_worker:
-  #   image: celery:4
-  #   container_name: AndroxineBackendCeleryWorker
+  celery_worker:
+    build:
+      context: ../
+      dockerfile: app.Dockerfile
+    command: ../scripts/celery_worker.sh
+    container_name: AndroxineBackendCeleryWorker
+    restart: always
+    depends_on:
+      - celery_redis_broker
 
   # elasticsearch:
   #   image: elasticsearch:8.14.0
