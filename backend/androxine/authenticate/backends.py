@@ -9,6 +9,10 @@ UserModel = get_user_model()
 
 
 class EmailUsernameModelBackend(ModelBackend):
+    '''
+    Overriding base backend for authenticate with username or email
+    '''
+
     def authenticate(self, request: HttpRequest, username: str | None = ..., password: str | None = ..., **kwargs: Any) -> AbstractBaseUser | None:
         if username is None:
             username = kwargs.get(UserModel.USERNAME_FIELD)

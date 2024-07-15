@@ -13,7 +13,11 @@ UserModel = get_user_model()
 
 
 @shared_task()
-def send_user_verifications_email(user_id: uuid.UUID, domain) -> None:
+def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> None:
+    '''
+    Task for sending user verification email
+    '''
+
     try:
         user = UserModel.objects.get(pk=user_id)
     except UserModel.DoesNotExist:
