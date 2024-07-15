@@ -16,10 +16,10 @@ class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
 
 def get_user_from_email_verification_token(user_id: uuid.UUID, token: str) -> Optional[Any]:
     '''
-    Email verification token validator 
+    Email verification token validator
 
     Args:
-        user_id (uuid.UUID): user primary key 
+        user_id (uuid.UUID): user primary key
         token (str): email verification token required for validation
 
     Returns:

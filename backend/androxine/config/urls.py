@@ -17,16 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from config.views import foo, boo
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authenticate.urls')),
 ]
-
-urlfunctionspathes = [
-    path('foo/', foo, name='foo'),
-    path('boo/', boo, name='boo'),
-]
-
-urlpatterns += urlfunctionspathes
