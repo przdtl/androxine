@@ -2,5 +2,4 @@ include:
   - path:
       - ./compose/backend.compose.common.app.yaml
       - ./compose/backend.compose.common.db.yaml
-      - ./compose/backend.compose.common.celery.yaml
-      - ./compose/backend.compose.prod.override.yaml
+      - ./compose/backend.compose.test.override.yaml

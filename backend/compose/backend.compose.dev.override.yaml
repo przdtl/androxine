@@ -3,13 +3,17 @@ services:
     command: >
       sh -c " ../scripts/django.sh && 
               python manage.py runserver 0.0.0.0:8000"
-
     ports:
       - "8000:8000"
     volumes:
       - "../androxine:/app/androxine"
     env_file:
       - ../.env.dev
+    depends_on:
+      db:
+        condition: service_healthy
+      celery_redis_broker:
+        condition: service_started
 
   db:
     ports:

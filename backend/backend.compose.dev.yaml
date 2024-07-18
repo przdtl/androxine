@@ -1,4 +1,6 @@
 include:
   - path:
-    - ./compose/backend.compose.common.yaml
-    - ./compose/backend.compose.common.dev.override.yaml
+      - ./compose/backend.compose.common.app.yaml
+      - ./compose/backend.compose.common.db.yaml
+      - ./compose/backend.compose.common.celery.yaml
+      - ./compose/backend.compose.dev.override.yaml

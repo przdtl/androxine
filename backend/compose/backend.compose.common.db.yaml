@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:15
+    container_name: AndroxineBackendPostgreSQL
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d androxine_db -U postgres"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1111
+      - POSTGRES_DB=androxine_db
+    restart: always
+
+volumes:
+  postgres_data:

@@ -13,7 +13,7 @@ UserModel = get_user_model()
 
 
 @shared_task()
-def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> None:
+def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
     '''
     Task for sending user verification email
     '''
@@ -21,7 +21,7 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> None:
     try:
         user = UserModel.objects.get(pk=user_id)
     except UserModel.DoesNotExist:
-        return
+        return False
 
     email = user.email
     username = user.username
@@ -34,12 +34,10 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> None:
         'token': verification_token,
         'domain': domain,
     }
-
     body_template_string = render_to_string(
         template_name=body_template_path,
         context=body_template_context,
     )
-
     body_template_plain_message = strip_tags(body_template_string)
 
     send_mail(
@@ -49,3 +47,5 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> None:
         recipient_list=[email,],
         fail_silently=True,
     )
+
+    return True

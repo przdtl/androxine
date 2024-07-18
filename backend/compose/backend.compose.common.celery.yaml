@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  celery_redis_broker:
+    image: redis:alpine
+    container_name: AndroxineBackendRedisBroker
+    expose:
+      - 6379
+    restart: always
+
+  celery_worker:
+    build:
+      context: ../
+      dockerfile: app.Dockerfile
+    command: ../scripts/celery_worker.sh
+    container_name: AndroxineBackendCeleryWorker
+    restart: always
+    depends_on:
+      - celery_redis_broker
