@@ -1,13 +1,19 @@
 from rest_framework import serializers
 
+from exercise.models import Exercise
+
 
 class ExerciseSerializer(serializers.ModelSerializer):
-    pass
-    # category
+    category = serializers.CharField(
+        required=False,
+    )
+    name = serializers.CharField(
+        required=False,
+    )
 
-    # class Meta:
-    #     model = Exercise
-    #     fields = ['slug',]
+    class Meta:
+        model = Exercise
+        fields = '__all__'
 
 
 class ExerciseCategorySerializer(serializers.ModelSerializer):

@@ -6,3 +6,7 @@ python-ulid==2.7.0
 celery[redis]==5.4.0
 flake8==7.1.0
 coverage==7.6.0
+elasticsearch==8.14.0
+elasticsearch-dsl==8.14.0
+django-elasticsearch-dsl==8.0
+pytils==0.4.1

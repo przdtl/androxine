@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.text import slugify
+from pytils.translit import slugify
 
 
 class ExerciseCategory(models.Model):
@@ -11,6 +11,9 @@ class ExerciseCategory(models.Model):
         max_length=255,
         blank=True,
     )
+
+    def __str__(self) -> str:
+        return self.name
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -32,6 +35,9 @@ class Exercise(models.Model):
 
     class Meta:
         unique_together = ['name', 'category']
+
+    def __str__(self) -> str:
+        return '[{}]{}'.format(self.category, self.name)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

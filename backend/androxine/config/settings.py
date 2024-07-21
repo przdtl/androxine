@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 
     'social_django',  # auth through OAuth2
 
+    'django_elasticsearch_dsl',  # elasticsearch
+
     'authenticate',
     'exercise',
 ]
@@ -63,8 +65,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25
 }
 
 AUTHENTICATION_BACKENDS = [
@@ -184,3 +186,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
 
 # Celery settings
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+
+# Elasticsearch settings
+ELASTICSEARCH_HOST = os.environ.get('ELASTICSEARCH_HOST')
+ELASTICSEARCH_PORT = os.environ.get('ELASTICSEARCH_PORT')
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'http://{}:{}'.format(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT)
+    },
+}

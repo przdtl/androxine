@@ -7,7 +7,3 @@ services:
       dockerfile: app.Dockerfile
     container_name: AndroxineBackendDjango
     restart: always
-
-  # elasticsearch:
-  #   image: elasticsearch:8.14.0
-  #   container_name: AndroxineBackendElasticsearch
