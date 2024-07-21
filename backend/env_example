@@ -2,6 +2,11 @@
 DEBUG=1
 SECRET_KEY='django-insecure-ef7dxcp(*tz^s23r-x!m$2f&2(d4d)*0&*@aimo3))9&@g275k'
 
+# Superuser secrets
+DJANGO_SUPERUSER_USERNAME=timo
+DJANGO_SUPERUSER_EMAIL=y.timko56@gmail.com
+DJANGO_SUPERUSER_PASSWORD=56326511181Fs
+
 # Database connection secrets
 DB_ENGINE='django.db.backends.postgresql'
 DB_NAME='androxine_db'

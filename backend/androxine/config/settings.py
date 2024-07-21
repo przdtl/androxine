@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'social_django',  # auth through OAuth2
 
     'authenticate',
+    'exercise',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +63,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100
 }
 
 AUTHENTICATION_BACKENDS = [
