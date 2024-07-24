@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from exercise.models import Exercise
+from exercise.models import Exercise, ExerciseCategory
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
@@ -17,4 +17,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
 
 
 class ExerciseCategorySerializer(serializers.ModelSerializer):
-    pass
+
+    class Meta:
+        model = ExerciseCategory
+        fields = '__all__'

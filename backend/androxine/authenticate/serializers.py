@@ -27,7 +27,8 @@ class SigninSerializer(serializers.Serializer):
 
 
 class SignupSerializer(serializers.ModelSerializer):
-
+    id = serializers.ReadOnlyField()
+    username = serializers.CharField(required=True)
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=UserModel.objects.all())]
     )
@@ -37,7 +38,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserModel
-        fields = ['username', 'email', 'password', 'password2',]
+        fields = ['id', 'username', 'email', 'password', 'password2',]
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:

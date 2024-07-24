@@ -43,6 +43,8 @@ INSTALLED_APPS = [
 
     'django_elasticsearch_dsl',  # elasticsearch
 
+    'drf_yasg',  # auto documentation
+
     'authenticate',
     'exercise',
 ]

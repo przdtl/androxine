@@ -10,6 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 from authenticate.serializers import SignupSerializer, SigninSerializer
 from authenticate.services import get_user_from_email_verification_token
 from authenticate.tasks import send_user_verifications_email
@@ -36,6 +39,10 @@ class UserRegister(CreateAPIView):
 class UserLogin(APIView):
     permission_classes = [AllowAny,]
 
+    @swagger_auto_schema(
+        request_body=SigninSerializer,
+        responses={202: openapi.Response('Success ligin')},
+    )
     def post(self, request, format=None):
         serializer = SigninSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

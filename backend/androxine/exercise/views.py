@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
 
 from elasticsearch_dsl import Q

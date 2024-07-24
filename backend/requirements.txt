@@ -10,3 +10,4 @@ elasticsearch==8.14.0
 elasticsearch-dsl==8.14.0
 django-elasticsearch-dsl==8.0
 pytils==0.4.1
+drf-yasg==1.21.7
