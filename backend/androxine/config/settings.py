@@ -14,6 +14,8 @@ import os
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -158,6 +160,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'authenticate.User'
 
+LOGIN_URL = reverse_lazy('signin')
+
 # SMTP Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -185,6 +189,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
     'GOOGLE_OAUTH2_CLIENT_SECRET')
 
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/auth/me/'
+
 # Celery settings
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 
@@ -194,5 +200,23 @@ ELASTICSEARCH_PORT = os.environ.get('ELASTICSEARCH_PORT')
 ELASTICSEARCH_DSL = {
     'default': {
         'hosts': 'http://{}:{}'.format(ELASTICSEARCH_HOST, ELASTICSEARCH_PORT)
+    },
+}
+
+SWAGGER_SETTINGS = {
+    'LOGIN_URL': LOGIN_URL,
+    'LOGOUT_URL': reverse_lazy('signout'),
+    'SECURITY_DEFINITIONS': {
+        'Your App API - Swagger': {
+            'type': 'oauth2',
+            'flow': 'accessCode',
+            'authorizationUrl': reverse_lazy('social:begin', args=['google-oauth2']),
+        },
+    },
+    'OAUTH2_REDIRECT_URL': 'http://localhost/static/drf-yasg/swagger-ui-dist/oauth2-redirect.html',
+    'OAUTH2_CONFIG': {
+        'clientId': os.environ.get('GOOGLE_OAUTH2_CLIENT_ID'),
+        'clientSecret': os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET'),
+        'appName': 'google'
     },
 }
