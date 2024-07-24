@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from django.contrib.auth import login
+from django.forms.models import model_to_dict
+from django.contrib.auth import login, logout, get_user_model
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,9 +14,11 @@ from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from authenticate.serializers import SignupSerializer, SigninSerializer
+from authenticate.serializers import SignupSerializer, SigninSerializer, UserReadSerializer
 from authenticate.services import get_user_from_email_verification_token
 from authenticate.tasks import send_user_verifications_email
+
+UserModel = get_user_model()
 
 
 @permission_classes([AllowAny])
@@ -65,3 +68,17 @@ class ActivateUser(APIView):
         user.is_active = True
         user.save()
         return Response(status=status.HTTP_200_OK)
+
+
+class UserLogout(APIView):
+    def get(self, request, format=None):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
+
+class Me(APIView):
+    def get(self, request, format=None):
+        data = model_to_dict(request.user)
+        data.update(id=request.user.pk)
+        serializer_data = UserReadSerializer(data).data
+        return Response(serializer_data, status=status.HTTP_202_ACCEPTED)
