@@ -31,10 +31,23 @@ class UserRegisterTest(APITestCase):
             'password2': '23fcf453DSdhej#_d',
         }
         response = self.client.post(self.url, user_data)
-        serializer_data = SignupSerializer(user_data).data
+
+        print(response.data.get('id'))
+        user = UserModel.objects.get(pk=response.data.get('id'))
+        user.delete()
+
+        serializer = SignupSerializer(data=user_data)
+        serializer.is_valid()
+        serializer.save()
+
+        response_data = response.data
+        del response_data['id']
+
+        serializer_data = serializer.data
+        del serializer_data['id']
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data, serializer_data)
+        self.assertEqual(response_data, serializer_data)
 
     def test_signup_with_weak_password(self):
         user_data = {

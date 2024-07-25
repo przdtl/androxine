@@ -27,8 +27,6 @@ class SigninSerializer(serializers.Serializer):
 
 
 class SignupSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField()
-    username = serializers.CharField(required=True)
     email = serializers.EmailField(
         validators=[UniqueValidator(queryset=UserModel.objects.all())]
     )
