@@ -71,7 +71,7 @@ class ActivateUser(APIView):
 
 
 class UserLogout(APIView):
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         logout(request)
         return Response(status=status.HTTP_200_OK)
 
@@ -81,4 +81,4 @@ class Me(APIView):
         data = model_to_dict(request.user)
         data.update(id=request.user.pk)
         serializer_data = UserReadSerializer(data).data
-        return Response(serializer_data, status=status.HTTP_202_ACCEPTED)
+        return Response(serializer_data, status=status.HTTP_200_OK)

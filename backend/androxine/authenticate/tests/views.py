@@ -5,10 +5,12 @@ from django.test.utils import override_settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework.exceptions import NotAuthenticated
 
 from authenticate.serializers import (
     SignupSerializer,
-    SigninSerializer
+    SigninSerializer,
+    UserReadSerializer,
 )
 from authenticate.services import EmailVerificationTokenGenerator
 
@@ -218,3 +220,70 @@ class UserLoginTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, serializer.errors)
+
+
+class UserProfileTest(APITestCase):
+    def setUp(self) -> None:
+        self.url = reverse_lazy('me')
+        self.username = 'user'
+        self.email = 'user@test.com'
+        self.password = '7>B~Q"[02`/EE5w'
+        self.user = UserModel.objects.create_user(
+            self.username,
+            self.email,
+            self.password,
+        )
+
+    def test_getting_profile_of_logged_in_user(self):
+        self.assertTrue(self.client.login(
+            username=self.username, password=self.password)
+        )
+
+        response = self.client.get(self.url)
+
+        serializer_data = UserReadSerializer({
+            'id': self.user.pk,
+            'username': self.username,
+            'email': self.email,
+        }).data
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, serializer_data)
+
+    def test_getting_profile_of_not_logged_in_user(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.data, {'detail': NotAuthenticated.default_detail})
+
+
+class UserLogoutTest(APITestCase):
+    def setUp(self) -> None:
+        self.url = reverse_lazy('signout')
+        self.username = 'user'
+        self.email = 'user@test.com'
+        self.password = '7>B~Q"[02`/EE5w'
+        self.user = UserModel.objects.create_user(
+            self.username,
+            self.email,
+            self.password,
+        )
+
+    def test_signout_of_logged_in_user(self):
+        self.assertTrue(self.client.login(
+            username=self.username, password=self.password)
+        )
+
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, None)
+
+    def test_signout_of_not_logged_in_user(self):
+        response = self.client.post(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.data, {'detail': NotAuthenticated.default_detail}
+        )
