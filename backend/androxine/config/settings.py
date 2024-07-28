@@ -162,6 +162,8 @@ AUTH_USER_MODEL = 'authenticate.User'
 
 LOGIN_URL = reverse_lazy('signin')
 
+AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
+
 # SMTP Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

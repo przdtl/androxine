@@ -1,7 +1,8 @@
 services:
   drf_app:
     command: >
-      sh -c " coverage run manage.py test -v 2 && 
+      sh -c " python manage.py search_index --create &&
+              coverage run manage.py test -v 2 && 
               coverage report &&
               coverage html"
     volumes:
@@ -9,3 +10,6 @@ services:
     env_file:
       - ../.env.tests
     restart: on-failure
+    depends_on:
+      elasticsearch:
+        condition: service_healthy

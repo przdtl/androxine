@@ -34,7 +34,6 @@ class UserRegisterTest(APITestCase):
         }
         response = self.client.post(self.url, user_data)
 
-        print(response.data.get('id'))
         user = UserModel.objects.get(pk=response.data.get('id'))
         user.delete()
 

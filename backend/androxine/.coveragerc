@@ -1,7 +1,8 @@
 [run]
 source=
-    authenticate/
     config/
+    authenticate/
+    exercise/
 omit=
     */migrations/*
     */tests/*

@@ -1,5 +1,5 @@
 from django.db import models
-from pytils.translit import slugify
+from autoslug import AutoSlugField
 
 
 class ExerciseCategory(models.Model):
@@ -7,30 +7,28 @@ class ExerciseCategory(models.Model):
         max_length=255,
         unique=True,
     )
-    slug = models.SlugField(
+    slug = AutoSlugField(
         max_length=255,
         blank=True,
+        populate_from='name',
     )
 
     def __str__(self) -> str:
         return self.name
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
 
 
 class Exercise(models.Model):
     name = models.CharField(
         max_length=255,
     )
+    slug = AutoSlugField(
+        max_length=255,
+        blank=True,
+        populate_from='name',
+    )
     category = models.ForeignKey(
         'ExerciseCategory',
         on_delete=models.CASCADE
-    )
-    slug = models.SlugField(
-        max_length=255,
-        blank=True,
     )
 
     class Meta:
@@ -38,7 +36,3 @@ class Exercise(models.Model):
 
     def __str__(self) -> str:
         return '[{}]{}'.format(self.category, self.name)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
