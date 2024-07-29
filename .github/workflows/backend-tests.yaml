@@ -25,14 +25,7 @@ jobs:
       run:
         working-directory: ./backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Docker Compose Action
+        uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          python-version: "3.11"
-
-      - name: install deps
-        run: pip install -r ./requirements.txt
-
-      - name: run tests
-        working-directory: ./backend/androxine
-        run: python manage.py test
+          compose-file: "../../backend/backend.compose.test.yaml"
