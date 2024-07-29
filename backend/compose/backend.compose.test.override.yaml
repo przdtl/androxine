@@ -10,6 +10,17 @@ services:
     env_file:
       - path: ../.env.tests
         required: false
+    environment:
+      DEBUG: 1
+      SECRET_KEY: "django-insecure-ef7dxcp(*tz^s23r-x!m$2f&2(d4d)*0&*@aimo3))9&@g275k"
+      DB_ENGINE: "django.db.backends.postgresql"
+      DB_NAME: "androxine_db"
+      DB_USER: "postgres"
+      DB_PASS: 1111
+      DB_HOST: "db"
+      DB_PORT: 5432
+      ELASTICSEARCH_HOST: "elasticsearch"
+      ELASTICSEARCH_PORT: 9200
     restart: on-failure
     depends_on:
       elasticsearch:

@@ -32,14 +32,3 @@ jobs:
           compose-file: "./backend.compose.test.yaml"
           cwd: "./backend"
           up-flags: "--exit-code-from=drf_app --abort-on-container-exit"
-        env:
-          DEBUG: 1
-          SECRET_KEY: "django-insecure-ef7dxcp(*tz^s23r-x!m$2f&2(d4d)*0&*@aimo3))9&@g275k"
-          DB_ENGINE: "django.db.backends.postgresql"
-          DB_NAME: "androxine_db"
-          DB_USER: "postgres"
-          DB_PASS: 1111
-          DB_HOST: "db"
-          DB_PORT: 5432
-          ELASTICSEARCH_HOST: "elasticsearch"
-          ELASTICSEARCH_PORT: 9200
