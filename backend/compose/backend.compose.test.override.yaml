@@ -21,7 +21,7 @@ services:
       DB_PORT: 5432
       ELASTICSEARCH_HOST: "elasticsearch"
       ELASTICSEARCH_PORT: 9200
-    restart: on-failure
+    restart: no
     depends_on:
       elasticsearch:
         condition: service_healthy

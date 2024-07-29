@@ -20,6 +20,7 @@ jobs:
         run: flake8 .
 
   tests:
+    needs: linter
     runs-on: ubuntu-latest
     defaults:
       run:
