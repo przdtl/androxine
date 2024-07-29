@@ -60,3 +60,6 @@ class ExerciseElasticsearchQueryTest(TestCase):
         })
 
         self.assertEqual(query, elasticsearch_query)
+
+    def test_actions_test(self):
+        self.assertFalse(True)
