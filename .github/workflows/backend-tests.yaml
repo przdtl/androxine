@@ -31,8 +31,7 @@ jobs:
         with:
           compose-file: "./backend.compose.test.yaml"
           cwd: "./backend"
-          up-flags: "--build"
-          down-flags: "-v"
+          up-flags: "--exit-code-from=drf_app --abort-on-container-exit"
         env:
           DEBUG: 1
           SECRET_KEY: "django-insecure-ef7dxcp(*tz^s23r-x!m$2f&2(d4d)*0&*@aimo3))9&@g275k"
