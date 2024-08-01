@@ -8,6 +8,7 @@ from exercise.models import Exercise
 class ExerciseDocument(Document):
 
     category = fields.TextField(attr='category.name')
+    slug = fields.TextField(attr='slug')
 
     class Index:
         name = 'exercise'

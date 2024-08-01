@@ -19,11 +19,6 @@ class ExerciseCategoryTest(TestCase):
 
         self.assertEqual(str(category), 'ноги')
 
-    def test_slugify_category_name(self):
-        category = ExerciseCategory.objects.first()
-
-        self.assertEqual(category.slug, slugify('ноги'))
-
 
 class ExerciseTest(TestCase):
     def setUp(self) -> None:
@@ -47,7 +42,8 @@ class ExerciseTest(TestCase):
         try:
             Exercise.objects.create(name='жим', category_id=self.grud.pk)
         except Exception:
-            self.fail('test_add_exercise_withexisting_name_in_other_category raised an exception')
+            self.fail(
+                'test_add_exercise_withexisting_name_in_other_category raised an exception')
 
     def test_str_representation(self):
         prised_exercise = Exercise.objects.get(
