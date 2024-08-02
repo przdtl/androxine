@@ -74,11 +74,6 @@ class UserExerciseSettingsTest(TestCase):
             email='user.user@gmail.com',
             password='asdSsd4223_ssas42?',
         )
-        prised_settings = UserExerciseSettings.objects.create(
-            user_id=self.user.pk,
-            exercise_id=self.prised.pk,
-            one_time_maximum=66,
-        )
 
     def test_str_representation(self):
         prised_settings = UserExerciseSettings.objects.get(

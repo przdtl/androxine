@@ -8,7 +8,6 @@ from rest_framework.request import Request
 from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase, DjangoRequestFactory
 from rest_framework.exceptions import NotAuthenticated, ErrorDetail
-from rest_framework.test import DjangoRequestFactory
 
 from exercise.documents import ExerciseDocument
 from exercise.views import UserExerciseSettingsCreateView
