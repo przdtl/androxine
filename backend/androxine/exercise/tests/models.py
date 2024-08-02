@@ -1,9 +1,12 @@
 from django.test import TestCase
 from django.db.utils import IntegrityError
+from django.contrib.auth import get_user_model
 
 from slugify import slugify
 
-from exercise.models import Exercise, ExerciseCategory
+from exercise.models import Exercise, ExerciseCategory, UserExerciseSettings
+
+UserModel = get_user_model()
 
 
 class ExerciseCategoryTest(TestCase):
@@ -59,3 +62,29 @@ class ExerciseTest(TestCase):
         )
 
         self.assertEqual(prised_exercise.slug, slugify('присед'))
+
+
+class UserExerciseSettingsTest(TestCase):
+    def setUp(self) -> None:
+        self.nogi = ExerciseCategory.objects.create(name='ноги')
+        self.prised = Exercise.objects.create(
+            name='присед', category_id=self.nogi.pk)
+        self.user = UserModel.objects.create_user(
+            username='user',
+            email='user.user@gmail.com',
+            password='asdSsd4223_ssas42?',
+        )
+        prised_settings = UserExerciseSettings.objects.create(
+            user_id=self.user.pk,
+            exercise_id=self.prised.pk,
+            one_time_maximum=66,
+        )
+
+    def test_str_representation(self):
+        prised_settings = UserExerciseSettings.objects.get(
+            user_id=self.user.pk,
+            exercise_id=self.prised.pk,
+        )
+
+        self.assertEqual(str(prised_settings),
+                         '[{}]{}'.format(str(self.user), str(self.prised)))

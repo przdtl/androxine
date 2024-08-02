@@ -73,5 +73,7 @@ class UserExerciseSettingsCreateView(CreateAPIView):
     queryset = UserExerciseSettings.objects.all()
 
     def post(self, request, *args, **kwargs):
+        request.data._mutable = True
         request.data['user'] = request.user.pk
+        request.data._mutable = False
         return super().post(request, *args, **kwargs)
