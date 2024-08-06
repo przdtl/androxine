@@ -53,4 +53,4 @@ class UserExerciseSettings(models.Model):
         ]
 
     def __str__(self) -> str:
-        return '[{}]{}'.format(self.user, self.exercise)
+        return '[{}].{}'.format(self.user, self.exercise)

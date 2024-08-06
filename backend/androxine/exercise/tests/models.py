@@ -87,4 +87,4 @@ class UserExerciseSettingsTest(TestCase):
         )
 
         self.assertEqual(str(prised_settings),
-                         '[{}]{}'.format(str(self.user), str(self.prised)))
+                         '[{}].{}'.format(str(self.user), str(self.prised)))
