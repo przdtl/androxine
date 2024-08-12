@@ -38,6 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('authenticate.urls')),
     path('exercise/', include('exercise.urls')),
+    path('template/', include('workout_template.urls')),
 ]
 
 docspatterns = [

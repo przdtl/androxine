@@ -52,7 +52,6 @@ class ExerciseInWorkoutTemplate(models.Model):
     )
     ordinal_number = models.SmallIntegerField(
         default=1,
-        unique=True,
         editable=False,
         validators=[MinValueValidator(1)]
     )
@@ -118,7 +117,6 @@ class ExerciseApproachInWorkoutTemplate(models.Model):
     )
     ordinal_number = models.SmallIntegerField(
         default=1,
-        unique=True,
         editable=False,
         validators=[MinValueValidator(1)]
     )
