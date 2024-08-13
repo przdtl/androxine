@@ -1,12 +1,17 @@
 from rest_framework.generics import (
-    ListAPIView, RetrieveUpdateAPIView, ListCreateAPIView
+    ListAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView,
 )
+from drf_yasg.utils import swagger_auto_schema
+
 from config.utils import UpdateRequestManager
 
 from exercise.models import ExerciseCategory, UserExerciseSettings
 from exercise.documents import ExerciseDocument
 from exercise.serializers import (
-    ExerciseCategorySerializer, ExerciseSerializer, ReadUserExerciseSettingsSerializer, WriteUserExerciseSettingsSerializer
+    ExerciseCategorySerializer,
+    ExerciseSerializer,
+    ReadUserExerciseSettingsSerializer,
+    WriteUserExerciseSettingsSerializer
 )
 from exercise.services import get_exercise_elasticsearch_query
 
@@ -33,20 +38,27 @@ class ExerciseListView(ListAPIView):
         return response
 
 
-class UserExerciseSettingsRetrieveUpdateView(CustomGetObjectMixin, RetrieveUpdateAPIView):
+class UserExerciseSettingsRetrieveUpdateView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = ReadUserExerciseSettingsSerializer
     queryset = UserExerciseSettings.objects.all()
     lookup_fields = {'exercise__slug': 'slug'}
     shadow_user_lookup_field = 'user'
 
+    @swagger_auto_schema(tags=['exercise_settings'])
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    @swagger_auto_schema(tags=['exercise_settings'])
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    @swagger_auto_schema(tags=['exercise_settings'])
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['exercise_settings'])
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
 
 
 class UserExerciseSettingsListCreateView(ListCreateAPIView):
@@ -59,8 +71,13 @@ class UserExerciseSettingsListCreateView(ListCreateAPIView):
             user_id=user_id
         )
 
+    @swagger_auto_schema(tags=['exercise_settings'])
     def post(self, request, *args, **kwargs):
         with UpdateRequestManager(request.data):
             request.data.update({'user': request.user.pk})
 
         return super().post(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['exercise_settings'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)

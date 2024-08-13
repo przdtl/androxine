@@ -1,5 +1,5 @@
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from drf_yasg.utils import swagger_auto_schema
 
@@ -36,7 +36,7 @@ class WorkoutTemplateCreateListView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class WorkoutTemplateRetrieveUpdateView(RetrieveUpdateAPIView):
+class WorkoutTemplateRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     serializer_class = WorkoutTemplateReadSerializer
     queryset = WorkoutTemplate.objects.all()
 
@@ -66,7 +66,7 @@ class ExerciseInWorkoutTemplateCreateListView(ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class ExerciseInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateAPIView):
+class ExerciseInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExerciseInWorkoutTemplateReadSerializer
     queryset = ExerciseInWorkoutTemplate.objects.all()
 
@@ -89,6 +89,10 @@ class ExerciseInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
 
+    @swagger_auto_schema(tags=['template_exercise'])
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
 
 class ExerciseApproachInWorkoutTemplateCreateListView(ListCreateAPIView):
     serializer_class = ExerciseApproachInWorkoutTemplateWriteSerializer
@@ -108,7 +112,7 @@ class ExerciseApproachInWorkoutTemplateCreateListView(ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class ExerciseApproachInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateAPIView):
+class ExerciseApproachInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExerciseApproachInWorkoutTemplateReadSerializer
     queryset = ExerciseApproachInWorkoutTemplate.objects.all()
 
@@ -130,3 +134,7 @@ class ExerciseApproachInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateAPIView)
     @swagger_auto_schema(tags=['template_exercise_approach'])
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['template_exercise_approach'])
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
