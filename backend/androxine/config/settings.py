@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'authenticate',
     'exercise',
     'workout_template',
+    'workout_settings',
 ]
 
 MIDDLEWARE = [

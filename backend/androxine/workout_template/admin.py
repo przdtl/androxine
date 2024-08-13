@@ -1,8 +1,9 @@
 from django.contrib import admin
 
 from workout_template.models import (
-    WorkoutTemplate, ExerciseInWorkoutTemplate,
-    ExerciseApproachInWorkoutTemplate, UserWorkoutSettings
+    WorkoutTemplate,
+    ExerciseInWorkoutTemplate,
+    ExerciseApproachInWorkoutTemplate
 )
 
 
@@ -19,8 +20,3 @@ class ExerciseInWorkoutTemplateAdmin(admin.ModelAdmin):
 @admin.register(ExerciseApproachInWorkoutTemplate)
 class ExerciseApproachInWorkoutTemplateAdmin(admin.ModelAdmin):
     readonly_fields = ['ordinal_number']
-
-
-@admin.register(UserWorkoutSettings)
-class UserWorkoutSettingsAdmin(admin.ModelAdmin):
-    pass

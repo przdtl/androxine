@@ -39,6 +39,7 @@ urlpatterns = [
     path('auth/', include('authenticate.urls')),
     path('exercise/', include('exercise.urls')),
     path('template/', include('workout_template.urls')),
+    path('workout_settings/', include('workout_settings.urls')),
 ]
 
 docspatterns = [

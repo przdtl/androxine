@@ -64,9 +64,10 @@ class CustomGetObjectMixin:
             filter_kwargs.update({lookup_field: self.kwargs[lookup_url_kwarg]})
 
         lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-        filter_kwargs.update({
-            self.lookup_field: self.kwargs[lookup_url_kwarg]
-        })
+        if lookup_url_kwarg in self.kwargs:
+            filter_kwargs.update({
+                self.lookup_field: self.kwargs[lookup_url_kwarg]
+            })
         if self.shadow_user_lookup_field:
             filter_kwargs.update({
                 self.shadow_user_lookup_field: self.request.user.pk
