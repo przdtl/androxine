@@ -20,7 +20,6 @@ class WorkoutTemplateReadSerializer(serializers.ModelSerializer):
 class WorkoutTemplateWriteSerializer(serializers.ModelSerializer):
     break_between_approaches = serializers.IntegerField(
         required=False,
-        default=120,  # TODO: add dependence on global user workout settings
     )
     created_by = serializers.UUIDField(
         source='created_by_id',

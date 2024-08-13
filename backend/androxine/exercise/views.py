@@ -1,5 +1,5 @@
 from rest_framework.generics import (
-    ListAPIView, RetrieveUpdateAPIView, CreateAPIView
+    ListAPIView, RetrieveUpdateAPIView, ListCreateAPIView
 )
 from config.utils import UpdateRequestManager
 
@@ -49,9 +49,15 @@ class UserExerciseSettingsRetrieveUpdateView(CustomGetObjectMixin, RetrieveUpdat
         return self.partial_update(request, *args, **kwargs)
 
 
-class UserExerciseSettingsCreateView(CreateAPIView):
+class UserExerciseSettingsListCreateView(ListCreateAPIView):
     serializer_class = WriteUserExerciseSettingsSerializer
     queryset = UserExerciseSettings.objects.all()
+
+    def get_queryset(self):
+        user_id = self.request.user.pk
+        return UserExerciseSettings.objects.filter(
+            user_id=user_id
+        )
 
     def post(self, request, *args, **kwargs):
         with UpdateRequestManager(request.data):

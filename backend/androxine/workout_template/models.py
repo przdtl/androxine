@@ -2,9 +2,14 @@ from decimal import Decimal
 
 from django.db import models
 from django.db.models import F
+from django.dispatch import receiver
+from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
 from django.core.validators import MinValueValidator
 
 from config.utils import current_timestamp_ulid
+
+UserModel = get_user_model()
 
 
 class WorkoutTemplate(models.Model):
@@ -21,7 +26,9 @@ class WorkoutTemplate(models.Model):
     name = models.CharField(
         max_length=255,
     )
-    break_between_approaches = models.PositiveSmallIntegerField()
+    break_between_approaches = models.PositiveSmallIntegerField(
+        blank=True,
+    )
 
     def __str__(self) -> str:
         return '[{}]{}'.format(self.created_by, self.name)
@@ -32,6 +39,15 @@ class WorkoutTemplate(models.Model):
                 fields=['created_by', 'name'],
                 name='unique template name for every user')
         ]
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.break_between_approaches:
+            user_settings_instance = UserWorkoutSettings.objects.get(
+                user_id=self.created_by.id
+            )
+            self.break_between_approaches = user_settings_instance.break_between_approaches
+
+        return super().save(*args, **kwargs)
 
 
 class ExerciseInWorkoutTemplate(models.Model):
@@ -145,3 +161,24 @@ class ExerciseApproachInWorkoutTemplate(models.Model):
         )
 
         return deleted_item
+
+
+class UserWorkoutSettings(models.Model):
+    user = models.OneToOneField(
+        'authenticate.user',
+        on_delete=models.CASCADE,
+        related_name='workout_settings',
+        primary_key=True
+    )
+    break_between_approaches = models.PositiveSmallIntegerField(
+        default=120,
+    )
+
+    def __str__(self) -> str:
+        return '{}'.format(self.user)
+
+
+@receiver(post_save, sender=UserModel)
+def create_workout_settings(sender, instance, created, **kwargs):
+    if created:
+        UserWorkoutSettings.objects.create(user=instance)
