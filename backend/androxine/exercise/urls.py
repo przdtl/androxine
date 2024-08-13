@@ -12,7 +12,7 @@ urlpatterns = [
 
 exercise_settings_urlpatterns = [
     path('settings/', UserExerciseSettingsListCreateView.as_view(),
-         name='create_exercise_settings'),
+         name='list_create_exercise_settings'),
     path('settings/<slug:slug>/', UserExerciseSettingsRetrieveUpdateView.as_view(),
          name='manage_exercise_settings'),
 ]

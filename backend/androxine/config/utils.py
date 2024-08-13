@@ -1,6 +1,6 @@
 import uuid
 from ulid import ULID
-from typing import Optional
+from typing import Optional, Self
 
 from django.http import QueryDict
 from django.core.exceptions import ValidationError
@@ -79,7 +79,7 @@ class CustomGetObjectMixin:
 
 
 class UpdateRequestManager:
-    def __init__(self, request_data) -> None:
+    def __init__(self, request_data) -> Self:
         self.request_data = request_data
         self.is_query_dict = isinstance(self.request_data, QueryDict)
 
@@ -87,6 +87,6 @@ class UpdateRequestManager:
         if self.is_query_dict:
             self.request_data._mutable = True
 
-    def __exit__(self) -> None:
+    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         if self.is_query_dict:
             self.request_data._mutable = False

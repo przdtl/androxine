@@ -10,7 +10,7 @@ from rest_framework.test import APITestCase, DjangoRequestFactory
 from rest_framework.exceptions import NotAuthenticated, ErrorDetail
 
 from exercise.documents import ExerciseDocument
-from exercise.views import UserExerciseSettingsCreateView
+from exercise.views import UserExerciseSettingsListCreateView
 from exercise.services import get_exercise_elasticsearch_query
 from exercise.models import ExerciseCategory, Exercise, UserExerciseSettings
 from exercise.serializers import (
@@ -452,7 +452,7 @@ class POSTUserExerciseSettings(APITestCase):
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
-        cls.url = reverse_lazy('create_exercise_settings')
+        cls.url = reverse_lazy('list_create_exercise_settings')
         cls.request_factory_class = DjangoRequestFactory
 
     def setUp(self) -> None:
@@ -472,7 +472,7 @@ class POSTUserExerciseSettings(APITestCase):
     def test_post_exercise_settings_by_non_logging_user(self):
         self.client.logout()
         factory = self.request_factory_class()
-        view = UserExerciseSettingsCreateView.as_view()
+        view = UserExerciseSettingsListCreateView.as_view()
         request = factory.post(self.url)
         response = view(request)
 
