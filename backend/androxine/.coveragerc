@@ -3,6 +3,8 @@ source=
     config/
     authenticate/
     exercise/
+    workout_settings/
+    workout_template/
 omit=
     */migrations/*
     */tests/*
