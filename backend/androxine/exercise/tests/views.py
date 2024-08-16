@@ -448,6 +448,50 @@ class PATCHUserExerciseSettings(APITestCase):
         self.assertEqual(response.data, serializer_data)
 
 
+class DELETEUserExerciseSettings(APITestCase):
+    def setUp(self) -> None:
+        self.user = UserModel.objects.create_user(
+            username='user',
+            email='user.user@gmail.com',
+            password='asdSsd4223_ssas42?',
+        )
+        self.nogi = ExerciseCategory.objects.create(name='ноги')
+        self.prised = Exercise.objects.create(
+            name='присед', category_id=self.nogi.pk)
+        self.prised_settings = UserExerciseSettings.objects.create(
+            user_id=self.user.pk,
+            exercise_id=self.prised.pk,
+            one_time_maximum=101.0,
+        )
+        self.client.login(
+            username='user',
+            password='asdSsd4223_ssas42?',
+        )
+
+    def test_delete_exercise_settings_by_non_logging_user(self):
+        self.client.logout()
+        url = reverse_lazy('manage_exercise_settings', args=['prised'])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.data, {'detail': NotAuthenticated.default_detail})
+
+    def test_delete_not_existed_exercise_settings(self):
+        url = reverse_lazy('manage_exercise_settings', args=['zhim'])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, user_exerxise_settings_error_response)
+
+    def test_delete_exercise_settings(self):
+        url = reverse_lazy('manage_exercise_settings', args=['prised'])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data, None)
+
+
 class POSTUserExerciseSettings(APITestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -549,3 +593,72 @@ class POSTUserExerciseSettings(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data, serializer_data)
+
+
+class ListUserExerciseSettings(APITestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.url = reverse_lazy('list_create_exercise_settings')
+        cls.pagination_class = api_settings.DEFAULT_PAGINATION_CLASS
+
+    def setUp(self) -> None:
+        self.user = UserModel.objects.create_user(
+            username='user',
+            email='user.user@gmail.com',
+            password='asdSsd4223_ssas42?',
+        )
+        self.nogi = ExerciseCategory.objects.create(name='ноги')
+        self.prised = Exercise.objects.create(
+            name='присед', category_id=self.nogi.pk)
+        self.client.login(
+            username='user',
+            password='asdSsd4223_ssas42?',
+        )
+
+    def test_list_exercise_settings_by_non_logging_user(self):
+        self.client.logout()
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            response.data, {'detail': NotAuthenticated.default_detail})
+
+    def test_list_empty_exercise_settings(self):
+        response = self.client.get(self.url)
+        UserExerciseSettings.objects.all().delete()
+        queryset = UserExerciseSettings.objects.none()
+
+        factory = DjangoRequestFactory()
+        request = Request(factory.get(self.url))
+
+        pagination_obj = self.pagination_class()
+        settings_data = pagination_obj.paginate_queryset(queryset, request)
+        pagination_response = pagination_obj.get_paginated_response(
+            WriteUserExerciseSettingsSerializer(
+                settings_data, many=True).data
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, pagination_response.data)
+
+    def test_list_not_empty_exercise_settings(self):
+        Exercise.objects.bulk_create([
+            Exercise(category=self.nogi, name='жим'),
+            Exercise(category=self.nogi, name='разгибание ног')
+        ])
+        response = self.client.get(self.url)
+        queryset = UserExerciseSettings.objects.all()
+
+        factory = DjangoRequestFactory()
+        request = Request(factory.get(self.url))
+
+        pagination_obj = self.pagination_class()
+        settings_data = pagination_obj.paginate_queryset(queryset, request)
+        pagination_response = pagination_obj.get_paginated_response(
+            WriteUserExerciseSettingsSerializer(
+                settings_data, many=True).data
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, pagination_response.data)

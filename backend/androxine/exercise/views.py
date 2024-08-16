@@ -38,7 +38,7 @@ class ExerciseListView(ListAPIView):
         return response
 
 
-class UserExerciseSettingsRetrieveUpdateView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):
+class UserExerciseSettingsRetrieveUpdateDestroyView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = ReadUserExerciseSettingsSerializer
     queryset = UserExerciseSettings.objects.all()
     lookup_fields = {'exercise__slug': 'slug'}

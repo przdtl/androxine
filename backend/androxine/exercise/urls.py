@@ -1,7 +1,7 @@
 from django.urls import path
 
 from exercise.views import (
-    ExerciseCategoryListView, ExerciseListView, UserExerciseSettingsRetrieveUpdateView, UserExerciseSettingsListCreateView
+    ExerciseCategoryListView, ExerciseListView, UserExerciseSettingsRetrieveUpdateDestroyView, UserExerciseSettingsListCreateView
 )
 
 urlpatterns = [
@@ -13,7 +13,7 @@ urlpatterns = [
 exercise_settings_urlpatterns = [
     path('settings/', UserExerciseSettingsListCreateView.as_view(),
          name='list_create_exercise_settings'),
-    path('settings/<slug:slug>/', UserExerciseSettingsRetrieveUpdateView.as_view(),
+    path('settings/<slug:slug>/', UserExerciseSettingsRetrieveUpdateDestroyView.as_view(),
          name='manage_exercise_settings'),
 ]
 
