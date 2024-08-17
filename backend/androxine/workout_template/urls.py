@@ -1,12 +1,12 @@
 from django.urls import path
 
 from workout_template.views import (
-    WorkoutTemplateRetrieveUpdateView,
     WorkoutTemplateCreateListView,
     ExerciseInWorkoutTemplateCreateListView,
-    ExerciseInWorkoutTemplateRetrieveUpdateView,
+    WorkoutTemplateRetrieveUpdateDestroyView,
     ExerciseApproachInWorkoutTemplateCreateListView,
-    ExerciseApproachInWorkoutTemplateRetrieveUpdateView,
+    ExerciseInWorkoutTemplateRetrieveUpdateDestroyView,
+    ExerciseApproachInWorkoutTemplateRetrieveUpdateDestroyView,
 )
 
 
@@ -18,7 +18,7 @@ urlpatterns = [
     ),
     path(
         '<uuid:pk>/',
-        WorkoutTemplateRetrieveUpdateView.as_view(),
+        WorkoutTemplateRetrieveUpdateDestroyView.as_view(),
         name='manage_template'
     ),
     path(
@@ -28,17 +28,17 @@ urlpatterns = [
     ),
     path(
         'exercise/<uuid:pk>/',
-        ExerciseInWorkoutTemplateRetrieveUpdateView.as_view(),
+        ExerciseInWorkoutTemplateRetrieveUpdateDestroyView.as_view(),
         name='manage_exercise_in_template'
     ),
     path(
         'approach/',
         ExerciseApproachInWorkoutTemplateCreateListView.as_view(),
-        name='add_exercise_approach_in_template'
+        name='create_and_list_exercise_approach_in_template'
     ),
     path(
         'approach/<uuid:pk>/',
-        ExerciseApproachInWorkoutTemplateRetrieveUpdateView.as_view(),
+        ExerciseApproachInWorkoutTemplateRetrieveUpdateDestroyView.as_view(),
         name='manage_exercise_approach_in_template'
     )
 ]

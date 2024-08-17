@@ -36,7 +36,7 @@ class WorkoutTemplateCreateListView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class WorkoutTemplateRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
+class WorkoutTemplateRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = WorkoutTemplateReadSerializer
     queryset = WorkoutTemplate.objects.all()
 
@@ -66,7 +66,7 @@ class ExerciseInWorkoutTemplateCreateListView(ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class ExerciseInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
+class ExerciseInWorkoutTemplateRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExerciseInWorkoutTemplateReadSerializer
     queryset = ExerciseInWorkoutTemplate.objects.all()
 
@@ -112,7 +112,7 @@ class ExerciseApproachInWorkoutTemplateCreateListView(ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class ExerciseApproachInWorkoutTemplateRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
+class ExerciseApproachInWorkoutTemplateRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExerciseApproachInWorkoutTemplateReadSerializer
     queryset = ExerciseApproachInWorkoutTemplate.objects.all()
 

@@ -1,6 +1,6 @@
+from django.urls import reverse_lazy
 from django.forms.models import model_to_dict
 from django.contrib.auth import get_user_model
-from django.urls import reverse_lazy
 
 from rest_framework import status
 from rest_framework.test import APITestCase
