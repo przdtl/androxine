@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'workout_template',
     'workout_settings',
     'weight',
+    'calculator',
 ]
 
 MIDDLEWARE = [
