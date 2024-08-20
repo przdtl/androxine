@@ -8,8 +8,9 @@ from config.utils import UpdateRequestManager
 from exercise.models import ExerciseCategory, UserExerciseSettings
 from exercise.documents import ExerciseDocument
 from exercise.serializers import (
-    ExerciseCategorySerializer,
     ExerciseSerializer,
+    ExerciseCategorySerializer,
+    ExerciseListSwaggerSerializer,
     ReadUserExerciseSettingsSerializer,
     WriteUserExerciseSettingsSerializer
 )
@@ -27,8 +28,13 @@ class ExerciseListView(ListAPIView):
     serializer_class = ExerciseSerializer
 
     def get_queryset(self):
-        category = self.request.query_params.get('category')
-        name = self.request.query_params.get('name')
+        input_serializer = ExerciseListSwaggerSerializer(
+            data=self.request.query_params
+        )
+        input_serializer.is_valid(raise_exception=True)
+
+        category = input_serializer.data.get('category')
+        name = input_serializer.data.get('name')
 
         search = ExerciseDocument.search().query(
             get_exercise_elasticsearch_query(name, category)
@@ -36,6 +42,12 @@ class ExerciseListView(ListAPIView):
         response = search.execute()
 
         return response
+
+    @swagger_auto_schema(
+        query_serializer=ExerciseListSwaggerSerializer
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class UserExerciseSettingsRetrieveUpdateDestroyView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):

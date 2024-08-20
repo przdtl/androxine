@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.db import models
 from django.db.models import F
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from config.utils import current_timestamp_ulid
 
@@ -119,7 +119,10 @@ class ExerciseApproachInWorkoutTemplate(models.Model):
         decimal_places=2,
         null=True,
         blank=True,
-        validators=[MinValueValidator(Decimal('000.00'))]
+        validators=[
+            MinValueValidator(Decimal('000.00')),
+            MaxValueValidator(Decimal('100.00'))
+        ]
     )
     absolute_weight = models.FloatField(
         default=0.0,

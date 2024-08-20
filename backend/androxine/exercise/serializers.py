@@ -20,6 +20,20 @@ class ExerciseSerializer(serializers.ModelSerializer):
         read_only_fields = ['slug']
 
 
+class ExerciseListSwaggerSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(
+        source='category__name',
+        required=False,
+    )
+    name = serializers.CharField(
+        required=False,
+    )
+
+    class Meta:
+        model = Exercise
+        fields = ['category', 'name']
+
+
 class ExerciseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ExerciseCategory

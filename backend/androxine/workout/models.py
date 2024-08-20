@@ -35,10 +35,9 @@ class Workout(models.Model):
     )
 
     def __str__(self) -> str:
-        return '[{}]{}'.format(self.created_by, self.beginning_datetime) + ' - {}'.format(self.enging_datetime) if self.enging_datetime else ''
+        return '[{}]{}'.format(self.created_by, self.beginning_datetime) + (' - {}'.format(self.enging_datetime) if self.enging_datetime else '')
 
     def save(self, *args, **kwargs) -> None:
-
         if not self.break_between_approaches:
             if self.workout_template:
                 self.break_between_approaches = self.workout_template.break_between_approaches

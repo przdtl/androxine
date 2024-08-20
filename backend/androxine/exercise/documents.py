@@ -20,5 +20,6 @@ class ExerciseDocument(Document):
     class Django:
         model = Exercise
         fields = [
+            'id',
             'name',
         ]
