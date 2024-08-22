@@ -1,8 +1,11 @@
 [run]
 source=
-    config/
     authenticate/
+    calculator/
+    config/
     exercise/
+    weight/
+    workout/
     workout_settings/
     workout_template/
 omit=

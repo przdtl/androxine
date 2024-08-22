@@ -1,5 +1,3 @@
-import uuid
-
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
@@ -526,16 +524,17 @@ class POSTUserExerciseSettings(APITestCase):
 
     def test_post_exercise_settings(self):
         settings_data = {
-            'exercise': self.prised.slug,
+            'exercise': self.prised.id,
             'one_time_maximum': 101.0,
         }
         response = self.client.post(self.url, settings_data)
-        serializer_settings_data = settings_data.copy()
-        serializer_settings_data['user'] = str(self.user.pk)
-        serializer = UserExerciseSettingsListCreateSerializer(
-            data=serializer_settings_data)
-        serializer.is_valid()
-        serializer_data = serializer.data
+        settings = UserExerciseSettings.objects.get(
+            user_id=self.user.pk,
+            exercise_id=self.prised.id
+        )
+        serializer_data = UserExerciseSettingsListCreateSerializer(
+            instance=settings
+        ).data
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data, serializer_data)
@@ -576,23 +575,6 @@ class POSTUserExerciseSettings(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, serializer_errors)
-
-    def test_post_exercise_settings_with_setting_random_user_id(self):
-        settings_data = {
-            'user': uuid.uuid4(),
-            'exercise': self.prised.slug,
-            'one_time_maximum': 101.0,
-        }
-        serializer_settings_data = settings_data.copy()
-        serializer_settings_data['user'] = str(self.user.pk)
-        response = self.client.post(self.url, settings_data)
-        serializer = UserExerciseSettingsListCreateSerializer(
-            data=serializer_settings_data)
-        serializer.is_valid()
-        serializer_data = serializer.data
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data, serializer_data)
 
 
 class ListUserExerciseSettings(APITestCase):

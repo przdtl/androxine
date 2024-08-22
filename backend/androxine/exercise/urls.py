@@ -10,10 +10,10 @@ from exercise.views import (
 
 exercise_urlpatterns = [
     path('', ExerciseListView.as_view(), name='exercise_list'),
-    path('<slug:slug>/', ExerciseRetrieveUpdateDestroyView.as_view(),
-         name='manage_exercise'),
     path('category/', ExerciseCategoryListView.as_view(),
          name='exercise_category_list'),
+    path('<slug:slug>/', ExerciseRetrieveUpdateDestroyView.as_view(),
+         name='manage_exercise'),
 ]
 
 exercise_settings_urlpatterns = [

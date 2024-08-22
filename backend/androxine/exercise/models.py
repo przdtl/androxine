@@ -1,6 +1,5 @@
 from django.db import models
 
-from slugify import slugify
 from autoslug import AutoSlugField
 
 from config.utils import current_timestamp_ulid
