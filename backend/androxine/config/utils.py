@@ -1,8 +1,10 @@
 import uuid
 from ulid import ULID
-from typing import Optional, Self
+from typing import Optional, Self, Callable
 
+from django.apps import apps
 from django.http import QueryDict
+from django.core.exceptions import ValidationError
 
 from rest_framework.generics import get_object_or_404
 
@@ -59,3 +61,16 @@ class UpdateRequestManager:
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         if self.is_query_dict:
             self.request_data._mutable = False
+
+
+def restrict_amount_for_class(model_app_name: str, model_name: str, lookup_field: str, limit: int = 10) -> Callable:
+    def wrapped(value):
+        model = apps.get_model(app_label=model_app_name, model_name=model_name)
+        if model.objects.filter(**{lookup_field: value}).count() >= limit:
+            raise ValidationError(
+                '{} already has maximal amount of refernces ({})'.format(
+                    model.__name__, limit
+                )
+            )
+
+    return wrapped

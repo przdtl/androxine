@@ -10,6 +10,13 @@ class ExerciseCategory(models.Model):
         max_length=255,
         unique=True,
     )
+    slug = AutoSlugField(
+        max_length=255,
+        blank=True,
+        unique=True,
+        populate_from='name',
+        always_update=True,
+    )
 
     def __str__(self) -> str:
         return self.name

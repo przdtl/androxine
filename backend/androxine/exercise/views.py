@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import (
-    ListAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView, ListCreateAPIView,
 )
 from drf_yasg.utils import swagger_auto_schema
 
@@ -26,9 +26,39 @@ from exercise.services import get_exercise_elasticsearch_query
 from config.utils import CustomGetObjectMixin
 
 
-class ExerciseCategoryListView(ListAPIView):
-    queryset = ExerciseCategory.objects.all()
+class ExerciseCategoryListCreateView(ListCreateAPIView):
     serializer_class = ExerciseCategorySerializer
+    queryset = ExerciseCategory.objects.all()
+    permission_classes = [IsAdminOrAuthReadOnly]
+
+    @swagger_auto_schema(tags=['exercise_category'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['exercise_category'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class ExerciseCategoryRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ExerciseCategorySerializer
+    queryset = ExerciseCategory.objects.all()
+    permission_classes = [IsAdminOrAuthReadOnly]
+    http_method_names = ['get', 'put', 'delete']
+    lookup_url_kwarg = 'slug'
+    lookup_field = 'slug'
+
+    @swagger_auto_schema(tags=['exercise_category'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['exercise_category'])
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @swagger_auto_schema(tags=['exercise_category'])
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
 
 
 class ExerciseListView(ListCreateAPIView):
