@@ -1,5 +1,9 @@
 from django.db import models
+
+from slugify import slugify
 from autoslug import AutoSlugField
+
+from config.utils import current_timestamp_ulid
 
 
 class ExerciseCategory(models.Model):
@@ -21,6 +25,7 @@ class Exercise(models.Model):
         blank=True,
         unique=True,
         populate_from='name',
+        always_update=True,
     )
     category = models.ForeignKey(
         'ExerciseCategory',
@@ -35,6 +40,12 @@ class Exercise(models.Model):
 
 
 class UserExerciseSettings(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        unique=True,
+        editable=False,
+        default=current_timestamp_ulid,
+    )
     user = models.ForeignKey(
         'authenticate.user',
         on_delete=models.CASCADE,

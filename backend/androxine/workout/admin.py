@@ -5,14 +5,14 @@ from workout.models import Workout, ExerciseInWorkout, ExerciseApproachInWorkout
 
 @admin.register(Workout)
 class WorkoutAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['id', 'beginning_datetime']
 
 
 @admin.register(ExerciseInWorkout)
 class ExerciseInWorkoutAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['id']
 
 
 @admin.register(ExerciseApproachInWorkout)
 class ExerciseApproachInWorkoutAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['id']

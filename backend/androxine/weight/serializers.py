@@ -3,6 +3,12 @@ from rest_framework import serializers
 from weight.models import Weight
 
 
+class WeightCreateSwaggerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Weight
+        fields = ['body_weight']
+
+
 class ReadWeightSerializer(serializers.ModelSerializer):
     class Meta:
         model = Weight

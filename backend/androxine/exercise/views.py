@@ -1,18 +1,25 @@
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.generics import (
     ListAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView,
 )
 from drf_yasg.utils import swagger_auto_schema
 
 from config.utils import UpdateRequestManager
+from config.permissions import IsAdminOrAuthReadOnly
 
-from exercise.models import ExerciseCategory, UserExerciseSettings
+from exercise.models import Exercise, ExerciseCategory, UserExerciseSettings
 from exercise.documents import ExerciseDocument
 from exercise.serializers import (
-    ExerciseSerializer,
+    ExerciseListSerializer,
+    ExericseManageSerializer,
+    ExerciseCreateSerializer,
     ExerciseCategorySerializer,
     ExerciseListSwaggerSerializer,
-    ReadUserExerciseSettingsSerializer,
-    WriteUserExerciseSettingsSerializer
+    UserExerciseSettingsManageSerializer,
+    UserExerciseSettingsListCreateSerializer,
+    UserExerciseSettingsListSwaggerSerializer,
+    UserExerciseSettingsManageSwaggerSerializer,
 )
 from exercise.services import get_exercise_elasticsearch_query
 
@@ -24,8 +31,10 @@ class ExerciseCategoryListView(ListAPIView):
     serializer_class = ExerciseCategorySerializer
 
 
-class ExerciseListView(ListAPIView):
-    serializer_class = ExerciseSerializer
+class ExerciseListView(ListCreateAPIView):
+    list_serializer_class = ExerciseListSerializer
+    create_serializer_class = ExerciseCreateSerializer
+    permission_classes = [IsAdminOrAuthReadOnly]
 
     def get_queryset(self):
         input_serializer = ExerciseListSwaggerSerializer(
@@ -44,14 +53,73 @@ class ExerciseListView(ListAPIView):
         return response
 
     @swagger_auto_schema(
-        query_serializer=ExerciseListSwaggerSerializer
+        query_serializer=ExerciseListSwaggerSerializer,
+        responses={200: ExerciseListSwaggerSerializer},
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        request_body=ExerciseCreateSerializer,
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.list_serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.list_serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.create_serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ExerciseRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ExericseManageSerializer
+    queryset = Exercise.objects.all()
+    permission_classes = [IsAdminOrAuthReadOnly]
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+
+
+class UserExerciseSettingsListCreateView(ListCreateAPIView):
+    serializer_class = UserExerciseSettingsListCreateSerializer
+
+    def get_queryset(self):
+        return UserExerciseSettings.objects.filter(
+            user_id=self.request.user.pk
+        )
+
+    @swagger_auto_schema(
+        tags=['exercise_settings'],
+        request_body=UserExerciseSettingsListSwaggerSerializer,
+        responses={201: UserExerciseSettingsListCreateSerializer},
+    )
+    def post(self, request, *args, **kwargs):
+        with UpdateRequestManager(request.data):
+            request.data.update({'user': request.user.pk})
+
+        return super().post(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        tags=['exercise_settings']
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
 
 class UserExerciseSettingsRetrieveUpdateDestroyView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):
-    serializer_class = ReadUserExerciseSettingsSerializer
+    serializer_class = UserExerciseSettingsManageSerializer
     queryset = UserExerciseSettings.objects.all()
     lookup_fields = {'exercise__slug': 'slug'}
     shadow_user_lookup_field = 'user'
@@ -60,36 +128,22 @@ class UserExerciseSettingsRetrieveUpdateDestroyView(CustomGetObjectMixin, Retrie
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
-    @swagger_auto_schema(tags=['exercise_settings'])
+    @swagger_auto_schema(
+        tags=['exercise_settings'],
+        request_body=UserExerciseSettingsManageSwaggerSerializer,
+        responses={200: UserExerciseSettingsManageSerializer},
+    )
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-    @swagger_auto_schema(tags=['exercise_settings'])
+    @swagger_auto_schema(
+        tags=['exercise_settings'],
+        request_body=UserExerciseSettingsManageSwaggerSerializer,
+        responses={200: UserExerciseSettingsManageSerializer},
+    )
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
     @swagger_auto_schema(tags=['exercise_settings'])
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
-
-
-class UserExerciseSettingsListCreateView(ListCreateAPIView):
-    serializer_class = WriteUserExerciseSettingsSerializer
-    queryset = UserExerciseSettings.objects.all()
-
-    def get_queryset(self):
-        user_id = self.request.user.pk
-        return UserExerciseSettings.objects.filter(
-            user_id=user_id
-        )
-
-    @swagger_auto_schema(tags=['exercise_settings'])
-    def post(self, request, *args, **kwargs):
-        with UpdateRequestManager(request.data):
-            request.data.update({'user': request.user.pk})
-
-        return super().post(request, *args, **kwargs)
-
-    @swagger_auto_schema(tags=['exercise_settings'])
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)

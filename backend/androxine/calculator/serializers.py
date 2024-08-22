@@ -10,3 +10,7 @@ class CalculateSerializer(serializers.Serializer):
         min_value=2,
         max_value=15,
     )
+
+
+class CalculateByApproachSerializer(serializers.Serializer):
+    approach_id = serializers.UUIDField()

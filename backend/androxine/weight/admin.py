@@ -5,4 +5,4 @@ from weight.models import Weight
 
 @admin.register(Weight)
 class WeightAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['id']

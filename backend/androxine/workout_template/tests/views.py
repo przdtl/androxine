@@ -13,7 +13,7 @@ from workout_template.models import (
     # ExerciseApproachInWorkoutTemplate
 )
 from workout_template.serializers import (
-    WorkoutTemplateWriteSerializer,
+    WorkoutTemplateListCreateSerializer,
     # WorkoutTemplateReadSerializer,
     # ExerciseInWorkoutTemplateWriteSerializer,
     # ExerciseInWorkoutTemplateReadSerializer,
@@ -94,7 +94,7 @@ class POSTWorkoutTemplateViewTestCases(APITestCase):
         instance = WorkoutTemplate.objects.get(
             **template_body, created_by=self.user
         )
-        serializer_data = WorkoutTemplateWriteSerializer(instance).data
+        serializer_data = WorkoutTemplateListCreateSerializer(instance).data
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data, serializer_data)
@@ -108,7 +108,7 @@ class POSTWorkoutTemplateViewTestCases(APITestCase):
         response = self.client.post(self.url, template_body)
         template_body['created_by'] = self.user
         instance = WorkoutTemplate.objects.get(**template_body)
-        serializer_data = WorkoutTemplateWriteSerializer(instance).data
+        serializer_data = WorkoutTemplateListCreateSerializer(instance).data
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data, serializer_data)

@@ -14,8 +14,8 @@ from exercise.views import UserExerciseSettingsListCreateView
 from exercise.services import get_exercise_elasticsearch_query
 from exercise.models import ExerciseCategory, Exercise, UserExerciseSettings
 from exercise.serializers import (
-    ExerciseCategorySerializer, ExerciseSerializer,
-    ReadUserExerciseSettingsSerializer, WriteUserExerciseSettingsSerializer
+    ExerciseCategorySerializer, ExerciseListSerializer,
+    UserExerciseSettingsManageSerializer, UserExerciseSettingsListCreateSerializer
 )
 
 UserModel = get_user_model()
@@ -133,7 +133,7 @@ class EmptyExerciseListViewTest(APITestCase):
         pagination_obj = self.pagination_class()
         categories_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            ExerciseSerializer(categories_data, many=True).data
+            ExerciseListSerializer(categories_data, many=True).data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -152,7 +152,7 @@ class EmptyExerciseListViewTest(APITestCase):
         pagination_obj = self.pagination_class()
         categories_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            ExerciseSerializer(categories_data, many=True).data
+            ExerciseListSerializer(categories_data, many=True).data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -171,7 +171,7 @@ class EmptyExerciseListViewTest(APITestCase):
         pagination_obj = self.pagination_class()
         categories_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            ExerciseSerializer(categories_data, many=True).data
+            ExerciseListSerializer(categories_data, many=True).data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -221,7 +221,7 @@ class NonEmptyExerciseListViewTest(APITestCase):
         pagination_obj = self.pagination_class()
         categories_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            ExerciseSerializer(categories_data, many=True).data
+            ExerciseListSerializer(categories_data, many=True).data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -240,7 +240,7 @@ class NonEmptyExerciseListViewTest(APITestCase):
         pagination_obj = self.pagination_class()
         categories_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            ExerciseSerializer(categories_data, many=True).data
+            ExerciseListSerializer(categories_data, many=True).data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -259,7 +259,7 @@ class NonEmptyExerciseListViewTest(APITestCase):
         pagination_obj = self.pagination_class()
         categories_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            ExerciseSerializer(categories_data, many=True).data
+            ExerciseListSerializer(categories_data, many=True).data
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -304,7 +304,7 @@ class GETUserExerciseSettings(APITestCase):
         )
         url = reverse_lazy('manage_exercise_settings', args=['prised'])
         response = self.client.get(url)
-        serializer_data = ReadUserExerciseSettingsSerializer(settings).data
+        serializer_data = UserExerciseSettingsManageSerializer(settings).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer_data)
@@ -368,7 +368,7 @@ class PUTUserExerciseSettings(APITestCase):
         }
         url = reverse_lazy('manage_exercise_settings', args=['prised'])
         response = self.client.put(url, settings_data)
-        serializer_data = ReadUserExerciseSettingsSerializer(
+        serializer_data = UserExerciseSettingsManageSerializer(
             self.prised_settings).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -431,7 +431,7 @@ class PATCHUserExerciseSettings(APITestCase):
         }
         url = reverse_lazy('manage_exercise_settings', args=['prised'])
         response = self.client.patch(url, settings_data)
-        serializer_data = ReadUserExerciseSettingsSerializer(
+        serializer_data = UserExerciseSettingsManageSerializer(
             self.prised_settings).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -441,7 +441,7 @@ class PATCHUserExerciseSettings(APITestCase):
         settings_data = {}
         url = reverse_lazy('manage_exercise_settings', args=['prised'])
         response = self.client.patch(url, settings_data)
-        serializer_data = ReadUserExerciseSettingsSerializer(
+        serializer_data = UserExerciseSettingsManageSerializer(
             self.prised_settings).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -532,7 +532,7 @@ class POSTUserExerciseSettings(APITestCase):
         response = self.client.post(self.url, settings_data)
         serializer_settings_data = settings_data.copy()
         serializer_settings_data['user'] = str(self.user.pk)
-        serializer = WriteUserExerciseSettingsSerializer(
+        serializer = UserExerciseSettingsListCreateSerializer(
             data=serializer_settings_data)
         serializer.is_valid()
         serializer_data = serializer.data
@@ -548,7 +548,7 @@ class POSTUserExerciseSettings(APITestCase):
         serializer_settings_data = settings_data.copy()
         serializer_settings_data['user'] = self.user.pk
         response = self.client.post(self.url, settings_data)
-        serializer = WriteUserExerciseSettingsSerializer(
+        serializer = UserExerciseSettingsListCreateSerializer(
             data=serializer_settings_data)
         serializer.is_valid()
         serializer_errors = serializer.errors
@@ -569,7 +569,7 @@ class POSTUserExerciseSettings(APITestCase):
         serializer_settings_data = settings_data.copy()
         serializer_settings_data['user'] = self.user.pk
         response = self.client.post(self.url, settings_data)
-        serializer = WriteUserExerciseSettingsSerializer(
+        serializer = UserExerciseSettingsListCreateSerializer(
             data=serializer_settings_data)
         serializer.is_valid()
         serializer_errors = serializer.errors
@@ -586,7 +586,7 @@ class POSTUserExerciseSettings(APITestCase):
         serializer_settings_data = settings_data.copy()
         serializer_settings_data['user'] = str(self.user.pk)
         response = self.client.post(self.url, settings_data)
-        serializer = WriteUserExerciseSettingsSerializer(
+        serializer = UserExerciseSettingsListCreateSerializer(
             data=serializer_settings_data)
         serializer.is_valid()
         serializer_data = serializer.data
@@ -635,7 +635,7 @@ class ListUserExerciseSettings(APITestCase):
         pagination_obj = self.pagination_class()
         settings_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            WriteUserExerciseSettingsSerializer(
+            UserExerciseSettingsListCreateSerializer(
                 settings_data, many=True).data
         )
 
@@ -656,7 +656,7 @@ class ListUserExerciseSettings(APITestCase):
         pagination_obj = self.pagination_class()
         settings_data = pagination_obj.paginate_queryset(queryset, request)
         pagination_response = pagination_obj.get_paginated_response(
-            WriteUserExerciseSettingsSerializer(
+            UserExerciseSettingsListCreateSerializer(
                 settings_data, many=True).data
         )
 

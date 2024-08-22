@@ -9,14 +9,14 @@ from workout_template.models import (
 
 @admin.register(WorkoutTemplate)
 class WorkoutTemplateAdmin(admin.ModelAdmin):
-    pass
+    readonly_fields = ['id']
 
 
 @admin.register(ExerciseInWorkoutTemplate)
 class ExerciseInWorkoutTemplateAdmin(admin.ModelAdmin):
-    readonly_fields = ['ordinal_number']
+    readonly_fields = ['ordinal_number', 'id']
 
 
 @admin.register(ExerciseApproachInWorkoutTemplate)
 class ExerciseApproachInWorkoutTemplateAdmin(admin.ModelAdmin):
-    readonly_fields = ['ordinal_number']
+    readonly_fields = ['ordinal_number', 'id']

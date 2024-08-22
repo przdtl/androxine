@@ -143,15 +143,23 @@ class FinishWorkoutView(APIView):
         request_body=no_body,
     )
     def post(self, request, *args, **kwargs):
-        workout_template = get_object_or_404(
+        workout = get_object_or_404(
             Workout,
             created_by_id=request.user.pk,
             enging_datetime__isnull=True
         )
-        workout_template.enging_datetime = datetime.datetime.now()
-        workout_template.save()
+        workout.enging_datetime = datetime.datetime.now()
+        workout.save()
 
-        serializer_data = self.get_serializer(instance=workout_template).data
+        exercises = workout.exercises.all()
+        for exercise in exercises:
+            if not exercise.approaches.exists():
+                exercise.delete()
+
+        if not workout.exercises.exists() or workout.beginning_datetime + datetime.timedelta(minutes=10) < workout.enging_datetime:
+            workout.delete()
+
+        serializer_data = self.get_serializer(instance=workout).data
 
         return Response(serializer_data, status=status.HTTP_200_OK)
 

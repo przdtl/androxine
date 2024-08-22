@@ -1,11 +1,17 @@
 from django.urls import path
 
 from exercise.views import (
-    ExerciseCategoryListView, ExerciseListView, UserExerciseSettingsRetrieveUpdateDestroyView, UserExerciseSettingsListCreateView
+    ExerciseListView,
+    ExerciseCategoryListView,
+    ExerciseRetrieveUpdateDestroyView,
+    UserExerciseSettingsListCreateView,
+    UserExerciseSettingsRetrieveUpdateDestroyView,
 )
 
-urlpatterns = [
+exercise_urlpatterns = [
     path('', ExerciseListView.as_view(), name='exercise_list'),
+    path('<slug:slug>/', ExerciseRetrieveUpdateDestroyView.as_view(),
+         name='manage_exercise'),
     path('category/', ExerciseCategoryListView.as_view(),
          name='exercise_category_list'),
 ]
@@ -17,4 +23,4 @@ exercise_settings_urlpatterns = [
          name='manage_exercise_settings'),
 ]
 
-urlpatterns += exercise_settings_urlpatterns
+urlpatterns = exercise_settings_urlpatterns + exercise_urlpatterns

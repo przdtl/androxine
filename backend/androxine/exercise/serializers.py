@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from exercise.models import Exercise, ExerciseCategory, UserExerciseSettings
 
 
-class ExerciseSerializer(serializers.ModelSerializer):
+class ExerciseListSerializer(serializers.ModelSerializer):
     category = serializers.CharField(
         required=False,
     )
@@ -20,6 +20,13 @@ class ExerciseSerializer(serializers.ModelSerializer):
         read_only_fields = ['slug']
 
 
+class ExerciseCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exercise
+        fields = '__all__'
+        read_only_fields = ['id', 'slug']
+
+
 class ExerciseListSwaggerSerializer(serializers.ModelSerializer):
     category = serializers.CharField(
         source='category__name',
@@ -31,7 +38,19 @@ class ExerciseListSwaggerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ['category', 'name']
+        fields = '__all__'
+        read_only_fields = ['id', 'slug']
+
+
+class ExericseManageSerializer(serializers.ModelSerializer):
+    exercise_slug = serializers.CharField(
+        source='exercise.slug',
+        read_only=True,
+    )
+
+    class Meta:
+        model = Exercise
+        fields = '__all__'
 
 
 class ExerciseCategorySerializer(serializers.ModelSerializer):
@@ -40,32 +59,40 @@ class ExerciseCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ReadUserExerciseSettingsSerializer(serializers.ModelSerializer):
-    slug = serializers.CharField(
+class UserExerciseSettingsManageSerializer(serializers.ModelSerializer):
+    exercise_slug = serializers.CharField(
         source='exercise.slug',
         read_only=True,
     )
 
     class Meta:
         model = UserExerciseSettings
-        fields = ['user', 'slug', 'one_time_maximum']
-        read_only_fields = ['user']
+        fields = '__all__'
+        read_only_fields = ['id', 'user', 'exercise_slug', 'exercise']
 
 
-class WriteUserExerciseSettingsSerializer(serializers.ModelSerializer):
-    exercise = serializers.SlugRelatedField(
-        queryset=Exercise.objects.all(),
-        slug_field='slug',
-    )
-    user = serializers.UUIDField(
-        source='user_id',
-        required=False,
-        help_text='this field is calculated automatically based on the data of the logged-in user',
+class UserExerciseSettingsManageSwaggerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserExerciseSettings
+        fields = ['one_time_maximum']
+
+
+class UserExerciseSettingsListSwaggerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserExerciseSettings
+        fields = ['exercise', 'one_time_maximum']
+
+
+class UserExerciseSettingsListCreateSerializer(serializers.ModelSerializer):
+    exercise_slug = serializers.CharField(
+        source='exercise.slug',
+        read_only=True,
     )
 
     class Meta:
         model = UserExerciseSettings
-        fields = ['user', 'exercise', 'one_time_maximum']
+        fields = '__all__'
+        read_only_fields = ['exercise_slug']
         validators = [
             UniqueTogetherValidator(
                 queryset=UserExerciseSettings.objects.all(),
