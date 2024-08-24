@@ -1,3 +1,6 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.generics import (
@@ -23,23 +26,19 @@ from exercise.serializers import (
 )
 from exercise.services import get_exercise_elasticsearch_query
 
-from config.utils import CustomGetObjectMixin
+from config.utils import CustomGetObjectMixin, methods_decorator
 
 
+@method_decorator(cache_page(60 * 30, key_prefix=f'{ExerciseCategory.__name__}_list'), name='list')
+@methods_decorator(swagger_auto_schema(tags=['exercise_category']), names=['get', 'post'])
 class ExerciseCategoryListCreateView(ListCreateAPIView):
     serializer_class = ExerciseCategorySerializer
     queryset = ExerciseCategory.objects.all()
     permission_classes = [IsAdminOrAuthReadOnly]
 
-    @swagger_auto_schema(tags=['exercise_category'])
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 
-    @swagger_auto_schema(tags=['exercise_category'])
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
+@method_decorator(cache_page(60 * 30, key_prefix=f'{ExerciseCategory.__name__}_retrieve'), name='retrieve')
+@methods_decorator(swagger_auto_schema(tags=['exercise_category']), names=['get', 'put', 'delete'])
 class ExerciseCategoryRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExerciseCategorySerializer
     queryset = ExerciseCategory.objects.all()
@@ -48,20 +47,10 @@ class ExerciseCategoryRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'slug'
     lookup_field = 'slug'
 
-    @swagger_auto_schema(tags=['exercise_category'])
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 
-    @swagger_auto_schema(tags=['exercise_category'])
-    def put(self, request, *args, **kwargs):
-        return super().put(request, *args, **kwargs)
-
-    @swagger_auto_schema(tags=['exercise_category'])
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-
-class ExerciseListView(ListCreateAPIView):
+@method_decorator(cache_page(60 * 30, key_prefix=f'{Exercise.__name__}_list'), name='list')
+class ExerciseListCreateView(ListCreateAPIView):
+    serializer_class = ExerciseListSerializer
     list_serializer_class = ExerciseListSerializer
     create_serializer_class = ExerciseCreateSerializer
     permission_classes = [IsAdminOrAuthReadOnly]
@@ -111,9 +100,11 @@ class ExerciseListView(ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+@method_decorator(cache_page(60 * 30, key_prefix=f'{Exercise.__name__}_retrieve'), name='retrieve')
 class ExerciseRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExericseManageSerializer
     queryset = Exercise.objects.all()
@@ -122,6 +113,7 @@ class ExerciseRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'slug'
 
 
+@method_decorator(swagger_auto_schema(tags=['exercise_settings']), name='get')
 class UserExerciseSettingsListCreateView(ListCreateAPIView):
     serializer_class = UserExerciseSettingsListCreateSerializer
 
@@ -141,22 +133,13 @@ class UserExerciseSettingsListCreateView(ListCreateAPIView):
 
         return super().post(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        tags=['exercise_settings']
-    )
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
 
-
+@methods_decorator(swagger_auto_schema(tags=['exercise_settings']), names=['get', 'delete'])
 class UserExerciseSettingsRetrieveUpdateDestroyView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = UserExerciseSettingsManageSerializer
     queryset = UserExerciseSettings.objects.all()
     lookup_fields = {'exercise__slug': 'slug'}
     shadow_user_lookup_field = 'user'
-
-    @swagger_auto_schema(tags=['exercise_settings'])
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
     @swagger_auto_schema(
         tags=['exercise_settings'],
@@ -173,7 +156,3 @@ class UserExerciseSettingsRetrieveUpdateDestroyView(CustomGetObjectMixin, Retrie
     )
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
-    @swagger_auto_schema(tags=['exercise_settings'])
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)

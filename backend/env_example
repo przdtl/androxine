@@ -4,8 +4,8 @@ SECRET_KEY='django-insecure-ef7dxcp(*tz^s23r-x!m$2f&2(d4d)*0&*@aimo3))9&@g275k'
 
 # Superuser secrets
 DJANGO_SUPERUSER_USERNAME=timo
-DJANGO_SUPERUSER_EMAIL=y.timko56@gmail.com
-DJANGO_SUPERUSER_PASSWORD=56326511181Fs
+DJANGO_SUPERUSER_EMAIL=admin@mail.com
+DJANGO_SUPERUSER_PASSWORD=1111
 
 # Database connection secrets
 DB_ENGINE='django.db.backends.postgresql'
@@ -25,3 +25,10 @@ EMAIL_HOST_PASSWORD=
 
 # Celery secrets
 CELERY_BROKER_URL='redis://celery_redis_broker:6379/0'
+
+# Cache secrets
+REDIS_CACHE_URL='redis://redis_cache:6380/0'
+
+# Elasticsearch secrets
+ELASTICSEARCH_HOST=elasticsearch
+ELASTICSEARCH_PORT=9200

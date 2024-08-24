@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import F
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-from config.utils import current_timestamp_ulid, restrict_amount_for_class
+from config.utils import current_timestamp_ulid, RestrictAmountValidator
 
 from workout_settings.models import UserWorkoutSettings
 
@@ -58,7 +58,7 @@ class ExerciseInWorkoutTemplate(models.Model):
         'WorkoutTemplate',
         on_delete=models.CASCADE,
         related_name='exercises',
-        validators=[restrict_amount_for_class(
+        validators=[RestrictAmountValidator(
             'workout_template', 'ExerciseInWorkoutTemplate', 'template', 20
         )]
     )
@@ -116,7 +116,7 @@ class ExerciseApproachInWorkoutTemplate(models.Model):
         'ExerciseInWorkoutTemplate',
         on_delete=models.CASCADE,
         related_name='approaches',
-        validators=[restrict_amount_for_class(
+        validators=[RestrictAmountValidator(
             'workout_template', 'ExerciseApproachInWorkoutTemplate', 'exercise_in_workout_template', 30
         )]
     )

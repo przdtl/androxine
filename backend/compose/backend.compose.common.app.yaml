@@ -5,3 +5,13 @@ services:
       dockerfile: app.Dockerfile
     container_name: AndroxineBackendDjango
     restart: always
+
+  redis_cache:
+    image: redis:alpine
+    container_name: AndroxineBackendRedisCache
+    command: redis-server /usr/local/etc/redis/redis.conf
+    expose:
+      - 6380
+    restart: always
+    volumes:
+      - ../redis/redis-cache.conf:/usr/local/etc/redis/redis.conf

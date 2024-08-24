@@ -10,8 +10,9 @@ services:
       - drf_app
 
   drf_app:
-    command: > 
-      sh -c " ../scripts/django.sh && 
+    command: >
+      sh -c " ../scripts/django.sh &&
+              ../scripts/search_index.sh &&
               gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/app/androxine/staticfiles
@@ -23,6 +24,10 @@ services:
       db:
         condition: service_healthy
       celery_redis_broker:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      redis_cache:
         condition: service_started
 
   celery_worker:

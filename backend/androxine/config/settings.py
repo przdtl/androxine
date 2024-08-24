@@ -64,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'config.middleware.DisableClientSideCachingMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -168,6 +170,19 @@ AUTH_USER_MODEL = 'authenticate.User'
 LOGIN_URL = reverse_lazy('signin')
 
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
+
+# Django-redis
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("REDIS_CACHE_URL"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 
 # SMTP Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

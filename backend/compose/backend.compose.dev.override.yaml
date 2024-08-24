@@ -2,7 +2,7 @@ services:
   drf_app:
     command: >
       sh -c " ../scripts/django.sh && 
-              python manage.py search_index --create &&
+              ../scripts/search_index.sh &&
               python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
@@ -17,6 +17,8 @@ services:
         condition: service_started
       elasticsearch:
         condition: service_healthy
+      redis_cache:
+        condition: service_started
 
   db:
     ports:

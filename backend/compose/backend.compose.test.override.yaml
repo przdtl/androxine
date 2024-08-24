@@ -1,8 +1,8 @@
 services:
   drf_app:
     command: >
-      sh -c " python manage.py search_index --create &&
-              coverage run manage.py test -v 2 && 
+      sh -c " coverage run --concurrency=multiprocessing manage.py test -v 2 --parallel auto &&
+              coverage combine &&
               coverage report &&
               coverage html"
     volumes:
@@ -21,6 +21,7 @@ services:
       DB_PORT: 5432
       ELASTICSEARCH_HOST: "elasticsearch"
       ELASTICSEARCH_PORT: 9200
+      REDIS_CACHE_URL: "redis://redis_cache:6380/0"
     restart: no
     depends_on:
       elasticsearch:
