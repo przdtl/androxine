@@ -24,9 +24,9 @@ from exercise.serializers import (
     UserExerciseSettingsListSwaggerSerializer,
     UserExerciseSettingsManageSwaggerSerializer,
 )
-from exercise.services import get_exercise_elasticsearch_query
-
 from config.utils import CustomGetObjectMixin, methods_decorator
+
+from exercise.services import get_exercise_elasticsearch_query
 
 
 @method_decorator(cache_page(60 * 30, key_prefix=f'{ExerciseCategory.__name__}_list'), name='list')

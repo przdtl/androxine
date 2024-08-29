@@ -10,7 +10,13 @@ class CalculateSerializer(serializers.Serializer):
         min_value=2,
         max_value=15,
     )
+    only_result = serializers.BooleanField(
+        default=False,
+    )
 
 
 class CalculateByApproachSerializer(serializers.Serializer):
     approach_id = serializers.UUIDField()
+    only_result = serializers.BooleanField(
+        default=False,
+    )

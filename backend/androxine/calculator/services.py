@@ -1,5 +1,7 @@
 import math
 
+from typing import Union
+
 from django.utils.translation import gettext as _
 
 calculate_functions = {
@@ -13,7 +15,29 @@ calculate_functions = {
 }
 
 
-def calculate_one_rep_maximum_weight(weight: float, reps: int, only_result: bool = True) -> float:
+def calculate_one_rep_maximum_weight(weight: float, reps: int, only_result: bool = True) -> Union[float, tuple[float, dict]]:
+    '''
+    Calculating one repetition maximum weight
+
+    Args:
+        weight(float): lifting weight
+        reps(int): number of repetitions with this weight
+        only_result(bool): flag that affects the value returned. If True returns only result, (result, intermediate_calculations) otherwise
+
+    Returns:
+        float | tuple[float, dict]: maximum weight for one repetition
+
+    Examples:
+        >> calculate_one_rep_maximum_weight(weight=100, reps=10)
+        130.0
+
+        >> calculate_one_rep_maximum_weight(weight=70, reps=6)
+        82.5
+
+        >> calculate_one_rep_maximum_weight(weight=65, reps=5)
+        75.0
+
+    '''
     functions_count = len(calculate_functions)
     intermediate_calculations = dict()
     calculated_sum = 0
@@ -26,10 +50,31 @@ def calculate_one_rep_maximum_weight(weight: float, reps: int, only_result: bool
     result = round(calculated_sum / functions_count, 2)
     result = round_up_to_barbell_weight(result)
 
-    return result if only_result else result, intermediate_calculations
+    return result if only_result else (result, intermediate_calculations)
 
 
 def round_up_to_barbell_weight(weight: float) -> float:
+    '''
+    Rounds the number to values that can be set on the barbell, i.e.
+    to a number ending in: .0, _2.5, _5.0, _7.5
+
+    Args:
+        weight(float): weight required to round up
+
+    Returns:
+        float: rounded weight
+
+    Examples:
+        >> round_up_to_barbell_weight(61.4)
+        62.5
+
+        >> round_up_to_barbell_weight(67.75)
+        67.5
+
+        >> round_up_to_barbell_weight(5.3)
+        5.0
+
+    '''
     fractional_part = weight - int(weight)
     number_before_point = int(weight) % 10
     number = number_before_point + fractional_part

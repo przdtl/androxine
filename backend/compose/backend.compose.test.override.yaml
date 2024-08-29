@@ -1,10 +1,6 @@
 services:
   drf_app:
-    command: >
-      sh -c " coverage run --concurrency=multiprocessing manage.py test -v 2 --parallel auto &&
-              coverage combine &&
-              coverage report &&
-              coverage html"
+    command: ../scripts/tests.sh
     volumes:
       - "../androxine:/app/androxine"
     env_file:

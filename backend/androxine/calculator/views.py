@@ -25,20 +25,23 @@ class CalculateView(APIView):
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
-        result, intermediate_calculations = calculate_one_rep_maximum_weight(
-            **serializer.data, only_result=False
+        calculated_data = calculate_one_rep_maximum_weight(
+            **serializer.data
         )
-        response_data = {
-            'result': result,
-            'functions': intermediate_calculations
-        }
+        if isinstance(calculated_data, tuple):
+            response_data = {
+                'result': calculated_data[0],
+                'functions': calculated_data[1]
+            }
+        else:
+            response_data = {
+                'result': calculated_data,
+            }
 
         return Response(response_data, status=status.HTTP_200_OK)
 
 
 class CalculateByApproachView(APIView):
-    permission_classes = [AllowAny]
-
     def get_serializer(self, *args, **kwargs):
         return CalculateByApproachSerializer(*args, **kwargs)
 
@@ -56,15 +59,21 @@ class CalculateByApproachView(APIView):
         )
         reps = approach.reps
         weight = approach.weight
+        only_result = serializer.data.get('only_result')
 
-        result, intermediate_calculations = calculate_one_rep_maximum_weight(
+        calculated_data = calculate_one_rep_maximum_weight(
             reps=reps,
             weight=weight,
-            only_result=False
+            only_result=only_result
         )
-        response_data = {
-            'result': result,
-            'functions': intermediate_calculations
-        }
+        if isinstance(calculated_data, tuple):
+            response_data = {
+                'result': calculated_data[0],
+                'functions': calculated_data[1]
+            }
+        else:
+            response_data = {
+                'result': calculated_data,
+            }
 
         return Response(response_data, status=status.HTTP_200_OK)

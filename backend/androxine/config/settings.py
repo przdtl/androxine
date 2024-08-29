@@ -41,11 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
 
-    'social_django',  # auth through OAuth2
-
+    'social_django',            # auth through OAuth2
     'django_elasticsearch_dsl',  # elasticsearch
-
-    'drf_yasg',  # auto documentation
+    'drf_yasg',                 # swagger auto documentation
 
     'authenticate',
     'exercise',

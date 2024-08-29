@@ -16,6 +16,8 @@ omit=
     manage.py
     config/?sgi.py
     config/settings.py
+parallel = True
+concurrency = multiprocessing
 [report]
 show_missing=True
 skip_covered=True
