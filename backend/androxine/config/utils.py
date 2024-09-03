@@ -1,32 +1,35 @@
 import uuid
+import logging
 
 from ulid import ULID
-from typing import Any, Optional, Self, Iterable
+from typing import Optional, Self, Iterable
 
-from django.apps import apps
 from django.conf import settings
 from django.http import QueryDict
 from django.core.cache import cache
-from django.core.exceptions import ValidationError
-from django.utils.deconstruct import deconstructible
 from django.utils.decorators import method_decorator
 
 from rest_framework.generics import get_object_or_404
 
+logger = logging.Logger(__name__)
+
 
 def current_timestamp_ulid() -> uuid.UUID:
+    '''
+    Calculate the ulid based on the current time and return it as a uuid
+    '''
     ulid = ULID()
     return ulid.to_uuid()
 
 
 class CustomGetObjectMixin:
+    '''
+    Mixin for getting an object by several path parameters or/ and a logged-in user
+    '''
     lookup_fields: dict = {}
     shadow_user_lookup_field: Optional[str] = None
 
     def get_object(self):
-        """
-        Returns the object the view is displaying.
-        """
         queryset = self.filter_queryset(self.get_queryset())
         filter_kwargs = {}
 
@@ -55,6 +58,10 @@ class CustomGetObjectMixin:
 
 
 class UpdateRequestManager:
+    '''
+    Manager for updating request data in generic view method
+    '''
+
     def __init__(self, request_data) -> Self:
         self.request_data = request_data
         self.is_query_dict = isinstance(self.request_data, QueryDict)
@@ -68,43 +75,22 @@ class UpdateRequestManager:
             self.request_data._mutable = False
 
 
-@deconstructible
-class RestrictAmountValidator:
-    def __init__(self, model_app_name: str, model_name: str, lookup_field: str, limit: int = 10) -> None:
-        self.model_app_name = model_app_name
-        self.model_name = model_name
-        self.lookup_field = lookup_field
-        self.limit = limit
-
-    def __call__(self, value) -> Any:
-        model = apps.get_model(
-            app_label=self.model_app_name, model_name=self.model_name)
-        if model.objects.filter(**{self.lookup_field: value}).count() >= self.limit:
-            raise ValidationError(
-                '{} already has maximal amount of refernces ({})'.format(
-                    model.__name__, self.limit
-                )
-            )
-
-    def __eq__(self, other) -> bool:
-        return (
-            isinstance(other, RestrictAmountValidator)
-            and (other.model_app_name == self.model_app_name)
-            and (other.model_name == self.model_name)
-            and (other.lookup_field == self.lookup_field)
-            and (other.limit == self.limit)
-        )
-
-
 def delete_cache(key_prefix: str):
     """
     Delete all cache keys with the given prefix.
     """
     keys_pattern = f"*.{key_prefix}_*.{settings.LANGUAGE_CODE}.{settings.TIME_ZONE}"
     cache.delete_pattern(keys_pattern)
+    logger.info(
+        'All entries with key_prefix {} have been deleted from the cache'.format(
+            key_prefix
+        ))
 
 
 def methods_decorator(decorator, names: Iterable[str]):
+    '''
+    The same as method decorator, but for multiple methods
+    '''
     def _dec(obj):
         for name in names:
             decorator_obj = method_decorator(decorator, name)

@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 
-from config.utils import current_timestamp_ulid, RestrictAmountValidator
+from config.utils import current_timestamp_ulid
+from config.validators import RestrictAmountValidator
 
 from workout_settings.models import UserWorkoutSettings
 

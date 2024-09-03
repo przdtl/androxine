@@ -10,14 +10,14 @@ from exercise.views import (
 )
 
 exercise_urlpatterns = [
-    path('', ExerciseListCreateView.as_view(), name='exercise_list'),
+    path('', ExerciseListCreateView.as_view(), name='exercise_list_create'),
     path('<slug:slug>/', ExerciseRetrieveUpdateDestroyView.as_view(),
          name='manage_exercise'),
 ]
 
 exercise_category_urlpatterns = [
     path('', ExerciseCategoryListCreateView.as_view(),
-         name='exercise_category_list'),
+         name='exercise_category_list_create'),
     path('<slug:slug>/', ExerciseCategoryRetrieveUpdateDestroyView.as_view(),
          name='manage_exercise_category')
 ]

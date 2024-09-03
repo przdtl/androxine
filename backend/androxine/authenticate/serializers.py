@@ -1,7 +1,8 @@
-from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.password_validation import validate_password
+
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 UserModel = get_user_model()
 
@@ -60,3 +61,8 @@ class UserReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = ['id', 'username', 'email']
+
+
+class ActivateUserSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField()
+    token = serializers.CharField()

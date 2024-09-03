@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import logging
 
 from pathlib import Path
 
@@ -138,6 +139,52 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGLEVEL = logging.getLevelName(os.environ.get('LOGLEVEL', 'info').upper())
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 20 if LOGLEVEL < 20 else LOGLEVEL,
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'debug.log'
+        }
+    },
+    'loggers': {
+        '': {
+            'level': LOGLEVEL,
+            'handlers': ['file', 'console']
+        },
+        'django': {
+            'level': 'DEBUG',
+            'handlers': ['file', 'console']
+        },
+        'django.db.backends': {
+            'level': 'INFO',
+            'handlers': ['file', 'console']
+        },
+        'django.utils.autoreload': {
+            'level': 'WARNING',
+            'handlers': ['file', 'console']
+        },
+    }
+}
 
 
 # Internationalization

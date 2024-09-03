@@ -1,14 +1,17 @@
 import uuid
+import logging
 
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
+
 from celery import shared_task
 
 from authenticate.services import EmailVerificationTokenGenerator
 
+logger = logging.getLogger(__name__)
 UserModel = get_user_model()
 
 
@@ -21,6 +24,9 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
     try:
         user = UserModel.objects.get(pk=user_id)
     except UserModel.DoesNotExist:
+        logging.info('It is not possible to send an email to verify the user with id {} because the user does not exist'.format(
+            user_id
+        ))
         return False
 
     email = user.email
@@ -29,7 +35,7 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
 
     body_template_path = 'authenticate/user_verifications_email_body.html'
     body_template_context = {
-        'uid': user_id,
+        'user_id': user_id,
         'username': username,
         'token': verification_token,
         'domain': domain,
@@ -46,6 +52,9 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[email,],
         fail_silently=True,
+    )
+    logger.info(
+        'A message has been sent to verify the user with id {}'.format(user_id)
     )
 
     return True

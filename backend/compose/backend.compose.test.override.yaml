@@ -18,6 +18,7 @@ services:
       ELASTICSEARCH_HOST: "elasticsearch"
       ELASTICSEARCH_PORT: 9200
       REDIS_CACHE_URL: "redis://redis_cache:6380/0"
+      LOGLEVEL: "CRITICAL"
     restart: no
     depends_on:
       elasticsearch:

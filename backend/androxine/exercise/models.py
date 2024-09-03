@@ -39,7 +39,11 @@ class Exercise(models.Model):
     )
 
     class Meta:
-        unique_together = ['name', 'category']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'category'],
+                name='Exercise names must be unique for every category')
+        ]
 
     def __str__(self) -> str:
         return '[{}]{}'.format(self.category, self.name)

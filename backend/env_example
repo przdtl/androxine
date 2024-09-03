@@ -1,6 +1,7 @@
 # Django basic settings
 DEBUG=1
 SECRET_KEY='django-insecure-ef7dxcp(*tz^s23r-x!m$2f&2(d4d)*0&*@aimo3))9&@g275k'
+LOGLEVEL='DEBUG'
 
 # Superuser secrets
 DJANGO_SUPERUSER_USERNAME=timo

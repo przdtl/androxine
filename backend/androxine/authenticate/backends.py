@@ -1,9 +1,10 @@
 from typing import Any
-from django.contrib.auth.base_user import AbstractBaseUser
+
 from django.db.models import Q
+from django.http import HttpRequest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-from django.http import HttpRequest
+from django.contrib.auth.base_user import AbstractBaseUser
 
 UserModel = get_user_model()
 

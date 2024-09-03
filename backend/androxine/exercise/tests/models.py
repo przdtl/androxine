@@ -22,6 +22,13 @@ class ExerciseCategoryTest(TestCase):
 
         self.assertEqual(str(category), 'ноги')
 
+    def test_slugify_exercise_category_name(self):
+        nogi = ExerciseCategory.objects.get(
+            name='ноги'
+        )
+
+        self.assertEqual(nogi.slug, slugify('ноги'))
+
 
 class ExerciseTest(TestCase):
     def setUp(self) -> None:
@@ -75,8 +82,8 @@ class UserExerciseSettingsTest(TestCase):
             password='asdSsd4223_ssas42?',
         )
         UserExerciseSettings.objects.create(
-            user_id=self.user.pk,
-            exercise_id=self.prised.pk,
+            user=self.user,
+            exercise=self.prised,
             one_time_maximum=66,
         )
 
@@ -88,3 +95,10 @@ class UserExerciseSettingsTest(TestCase):
 
         self.assertEqual(str(prised_settings),
                          '[{}].{}'.format(str(self.user), str(self.prised)))
+
+    def test_create_exercise_settings_for_existing_user_and_exercise(self):
+        with self.assertRaises(IntegrityError):
+            UserExerciseSettings.objects.create(
+                user=self.user,
+                exercise=self.prised,
+            )

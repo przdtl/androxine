@@ -1,8 +1,11 @@
 import math
+import logging
 
 from typing import Union
 
 from django.utils.translation import gettext as _
+
+logger = logging.getLogger(__name__)
 
 calculate_functions = {
     _("Epley's Formula"): lambda M, k: (M * k) / 30 + M,
@@ -50,6 +53,11 @@ def calculate_one_rep_maximum_weight(weight: float, reps: int, only_result: bool
     result = round(calculated_sum / functions_count, 2)
     result = round_up_to_barbell_weight(result)
 
+    logger.info(
+        'The maximum one-time weight with the input data was calculated: weight - {}, reps - {}, only_result - {}. Result: {}'.format(
+            weight, reps, only_result, result
+        ))
+
     return result if only_result else (result, intermediate_calculations)
 
 
@@ -86,5 +94,9 @@ def round_up_to_barbell_weight(weight: float) -> float:
         result += 2.5 - number
     else:
         result -= number
+
+    logger.info(
+        'Rounding has been performed from {} to {}'.format(weight, result)
+    )
 
     return result
