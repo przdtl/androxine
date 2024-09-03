@@ -1,0 +1,4 @@
+include:
+  - path:
+      - ./compose/frontend.compose.common.app.yaml
+      - ./compose/frontend.compose.dev.override.yaml
