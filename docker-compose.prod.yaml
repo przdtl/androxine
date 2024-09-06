@@ -1,0 +1,13 @@
+include:
+  # backend
+  - path:
+      - ./compose/backend.compose.common.app.yaml
+      - ./compose/backend.compose.common.db.yaml
+      - ./compose/backend.compose.common.celery.yaml
+      - ./compose/backend.compose.common.elasticsearch.yaml
+      - ./compose/backend.compose.prod.override.yaml
+
+  # frontend
+  - path:
+      - ./compose/frontend.compose.common.app.yaml
+      - ./compose/frontend.compose.prod.override.yaml
