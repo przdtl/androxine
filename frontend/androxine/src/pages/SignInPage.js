@@ -101,7 +101,7 @@ export default function SignInPage() {
     return (
         <>
             <CssBaseline enableColorScheme />
-            <PrevPageFrame>
+            <PrevPageFrame href='/home'>
                 <SignInContainer direction="column" justifyContent="space-between">
                     <Card variant="outlined">
                         <Typography

@@ -6,6 +6,9 @@ import Stack from '@mui/material/Stack';
 import AppNavbar from './AppNavbar';
 import MainGrid from './MainGrid';
 import SideMenu from './SideMenu';
+import Fab from '@mui/material/Fab';
+import NavigationIcon from '@mui/icons-material/Navigation';
+import ScrollToTopFab from './ScrollToTopFab';
 
 export default function Dashboard({ children }) {
   return (
@@ -33,6 +36,7 @@ export default function Dashboard({ children }) {
           >
             <MainGrid>
               {children}
+              <ScrollToTopFab />
             </MainGrid>
           </Stack>
         </Box>

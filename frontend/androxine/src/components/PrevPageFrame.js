@@ -55,7 +55,7 @@ export default function PrevPageFrame({
                         size="small"
                         aria-label="Back to templates"
                         component="a"
-                        href="/material-ui/getting-started/templates/"
+                        href={href ? href : '/'}
                         sx={{ display: { xs: 'auto', sm: 'none' } }}
                     >
                         <ArrowBackRoundedIcon />

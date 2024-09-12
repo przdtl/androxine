@@ -104,7 +104,7 @@ export default function SignUpPage() {
 
     return (
         <>
-            <PrevPageFrame>
+            <PrevPageFrame href='/home'>
                 <CssBaseline enableColorScheme />
                 <SignUpContainer direction="column" justifyContent="space-between">
                     <Stack
