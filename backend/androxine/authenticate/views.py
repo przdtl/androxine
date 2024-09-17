@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import login, logout, get_user_model
 
@@ -7,7 +8,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import CreateAPIView
-from rest_framework.decorators import permission_classes
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -19,9 +19,10 @@ from authenticate.serializers import SignupSerializer, SigninSerializer, UserRea
 UserModel = get_user_model()
 
 
-@permission_classes([AllowAny])
-def login_view(request):
-    return render(request, 'authenticate/login.html')
+def get_csrf(request):
+    response = JsonResponse({'detail': 'CSRF cookie set'})
+    response['X-CSRFToken'] = get_token(request)
+    return response
 
 
 class UserRegister(CreateAPIView):
@@ -33,7 +34,7 @@ class UserRegister(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
-        send_user_verifications_email.delay(self.user.pk, request.get_host())
+        send_user_verifications_email.delay(self.user.pk)
         return response
 
 

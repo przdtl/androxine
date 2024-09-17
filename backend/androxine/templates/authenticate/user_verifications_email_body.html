@@ -2,9 +2,11 @@
 <html lang="en">
 <body>
     <div>
-        Hello, {{ username }}
+        Hey {{ username }},
         <br>
-        Please activate your account: http://{{ domain }}{% url 'activate' user_id=user_id token=token %}
+        Thank you for joining to Androxine! To activate your account and start exploring, please click the verification link below:
+        <br>
+        {{ url|safe|urlize }}
     </div>
 </body>
 </html>

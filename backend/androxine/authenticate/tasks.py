@@ -4,6 +4,7 @@ import logging
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
+from django.utils.encoding import iri_to_uri
 from django.contrib.auth import get_user_model
 from django.template.loader import render_to_string
 
@@ -16,7 +17,7 @@ UserModel = get_user_model()
 
 
 @shared_task()
-def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
+def send_user_verifications_email(user_id: uuid.UUID) -> bool:
     '''
     Task for sending user verification email
     '''
@@ -32,13 +33,14 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
     email = user.email
     username = user.username
     verification_token = EmailVerificationTokenGenerator().make_token(user)
-
+    uri = iri_to_uri('/profile/activate/?user_id={}&token={}'.format(
+        user_id, verification_token
+    ))
+    verification_page_url = settings.FRONTEND_URL + uri
     body_template_path = 'authenticate/user_verifications_email_body.html'
     body_template_context = {
-        'user_id': user_id,
         'username': username,
-        'token': verification_token,
-        'domain': domain,
+        'url': verification_page_url,
     }
     body_template_string = render_to_string(
         template_name=body_template_path,
@@ -51,6 +53,7 @@ def send_user_verifications_email(user_id: uuid.UUID, domain: str) -> bool:
         message=body_template_plain_message,
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[email,],
+        html_message=body_template_string,
         fail_silently=True,
     )
     logger.info(

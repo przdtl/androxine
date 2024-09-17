@@ -30,7 +30,27 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'some secret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
-ALLOWED_HOSTS = []
+FRONTEND_PROTOCOL = 'https' if bool(
+    int(os.environ.get('FRONTEND_IS_SECURE', 0))) else 'http'
+FRONTEND_DOMAIN = os.environ.get('FRONTEND_DOMAIN', '127.0.0.1')
+FRONTEND_PORT = os.environ.get('FRONTEND_PORT', 80)
+FRONTEND_URL = '{}://{}:{}'.format(
+    FRONTEND_PROTOCOL,
+    FRONTEND_DOMAIN,
+    FRONTEND_PORT
+)
+
+ALLOWED_HOSTS = ['127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:3000']
+
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:3000',
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -45,6 +65,7 @@ INSTALLED_APPS = [
     'social_django',            # auth through OAuth2
     'django_elasticsearch_dsl',  # elasticsearch
     'drf_yasg',                 # swagger auto documentation
+    'corsheaders',
 
     'authenticate',
     'exercise',
@@ -56,6 +77,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -256,7 +278,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('GOOGLE_OAUTH2_CLIENT_ID')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
     'GOOGLE_OAUTH2_CLIENT_SECRET')
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/auth/me/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = FRONTEND_URL + '/home'
 
 # Celery settings
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
