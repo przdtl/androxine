@@ -1,11 +1,11 @@
 import { useCallback } from "react"
-import { useScrollTrigger } from "@mui/material"
 
-import CssBaseline from '@mui/material/CssBaseline';
-import Zoom from "@mui/material/Zoom";
 import Box from "@mui/material/Box";
 import Fab from "@mui/material/Fab";
+import Zoom from "@mui/material/Zoom";
+import { useScrollTrigger } from "@mui/material"
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+
 
 export default function ScrollToTopFab() {
     const trigger = useScrollTrigger({
@@ -19,7 +19,6 @@ export default function ScrollToTopFab() {
 
     return (
         <>
-            <CssBaseline enableColorScheme />
             <Zoom in={trigger}>
                 <Box
                     role="presentation"

@@ -1,75 +1,97 @@
 import React from 'react';
+import { SnackbarProvider } from 'notistack'
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider, responsiveFontSizes } from '@mui/material/styles';
+
 import getTheme from './theme/getTheme';
-import Dashboard from './components/Dashboard';
-import { AuthProvider } from './UserProvider';
+import { AuthProvider } from './AuthProvider';
 
 import './App.css';
 import '@fontsource/inter/600.css';
 
-import NotFoundPage from './pages/NotFoundPage';
 import HomePage from './pages/HomePage';
+import WeightPage from './pages/WeightPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
+import WorkoutPage from './pages/WorkoutPage';
+import ProfilePage from './pages/ProfilePage';
+import Dashboard from './components/Dashboard';
 import ExercisePage from './pages/ExercisePage';
 import TemplatePage from './pages/TemplatePage';
-import WorkoutPage from './pages/WorkoutPage';
-import WeightPage from './pages/WeightPage';
-import ProfilePage from './pages/ProfilePage';
+import NotFoundPage from './pages/NotFoundPage';
 import CalculatorPage from './pages/CalculatorPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AuthTokenVerifyPage } from './pages/AuthTokenVerifyPage';
+
+import SnackbarCloseButton from './SnackbarCloseButton';
+
 
 export const App = () => {
-  const Theme = createTheme(getTheme('light'));
+  let Theme = createTheme(getTheme('light'));
+  Theme = responsiveFontSizes(Theme, { breakpoints: ['xs', 'sm', 'md', 'lg', 'xl'], factor: 4 });
 
   return (
     <>
-      <ThemeProvider theme={Theme}>
+      <ThemeProvider theme={Theme} >
         <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/home" element={
-                <Dashboard>
-                  <HomePage />
-                </Dashboard>
-              } />
-              <Route path="/exercise" element={
-                <Dashboard>
-                  <ExercisePage />
-                </Dashboard>
-              } />
-              <Route path="/calculator" element={
-                <Dashboard>
-                  <CalculatorPage />
-                </Dashboard>
-              } />
-              <Route path="/profile" element={
-                <Dashboard>
-                  <ProfilePage />
-                </Dashboard>
-              } />
-              <Route path="/template" element={
-                <Dashboard>
-                  <TemplatePage />
-                </Dashboard>
-              } />
-              <Route path="/workout" element={
-                <Dashboard>
-                  <WorkoutPage />
-                </Dashboard>
-              } />
-              <Route path="/weight" element={
-                <Dashboard>
-                  <WeightPage />
-                </Dashboard>
-              } />
-              <Route path="/sign-in" element={<SignInPage />} />
-              <Route path="/sign-up" element={<SignUpPage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </BrowserRouter>
+          <SnackbarProvider action={snackbarKey => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/profile/activate" element={<AuthTokenVerifyPage />} />
+                <Route path="/sign-in" element={<SignInPage />} />
+                <Route path="/sign-up" element={<SignUpPage />} />
+                <Route path="/home" element={
+                  <Dashboard>
+                    <HomePage />
+                  </Dashboard>
+                } />
+                <Route path="/exercise" element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <ExercisePage />
+                    </Dashboard>
+                  </ProtectedRoute>
+                } />
+                <Route path="/calculator" element={
+                  <Dashboard>
+                    <CalculatorPage />
+                  </Dashboard>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <ProfilePage />
+                    </Dashboard>
+                  </ProtectedRoute>
+                } />
+                <Route path="/template" element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <TemplatePage />
+                    </Dashboard>
+                  </ProtectedRoute>
+                } />
+                <Route path="/workout" element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <WorkoutPage />
+                    </Dashboard>
+                  </ProtectedRoute>
+                } />
+                <Route path="/weight" element={
+                  <ProtectedRoute>
+                    <Dashboard>
+                      <WeightPage />
+                    </Dashboard>
+                  </ProtectedRoute>
+                } />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </BrowserRouter>
+          </SnackbarProvider>
         </AuthProvider>
-      </ThemeProvider>
+      </ThemeProvider >
     </>
   );
 }

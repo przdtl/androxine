@@ -1,112 +1,88 @@
+import axios from 'axios'
+
 import * as React from 'react';
+
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 
 import PrevPageFrame from '../components/PrevPageFrame';
-import { GoogleIcon } from '../components/CustomIcons';
+import GoogleConnect from '../components/GoogleConnect';
+import EmailInput from '../components/inputs/EmailInput';
+import LoginInput from '../components/inputs/LoginInput';
+import PasswordInput from '../components/inputs/PasswordInput';
+import { PageCard, PageCardContainer } from '../components/PageCard';
 
-const Card = styled(MuiCard)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'center',
-    width: '100%',
-    padding: theme.spacing(4),
-    gap: theme.spacing(2),
-    margin: 'auto',
-    boxShadow:
-        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-    [theme.breakpoints.up('sm')]: {
-        width: '450px',
-    },
-    ...theme.applyStyles('dark', {
-        boxShadow:
-            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-    }),
-}));
+import { useSnackbar } from 'notistack'
 
-const SignUpContainer = styled(Stack)(({ theme }) => ({
-    height: '100%',
-    padding: 4,
-    backgroundImage:
-        'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-    backgroundRepeat: 'no-repeat',
-    ...theme.applyStyles('dark', {
-        backgroundImage:
-            'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-    }),
-}));
 
 export default function SignUpPage() {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [nameError, setNameError] = React.useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const { enqueueSnackbar } = useSnackbar();
 
-    const validateInputs = () => {
-        const email = document.getElementById('email');
-        const password = document.getElementById('password');
-        const name = document.getElementById('name');
+    const [emailResponseErrorMessages, setEmailResponseErrorMessages] = React.useState([]);
+    const [loginResponseErrorMessages, setLoginResponseErrorMessages] = React.useState([]);
+    const [passwordResponseErrorMessages, setPasswordResponseErrorMessages] = React.useState([]);
+    // const [nonFieldResponseErrorMessages, setNonFieldResponseErrorMessages] = React.useState([]);
 
-        let isValid = true;
+    const [isEmailValidationError, setEmailValidationError] = React.useState(false);
+    const [isLoginValidationError, setLoginValidationError] = React.useState(false);
+    const [isPasswordValidationError, setPasswordValidationError] = React.useState(false);
+    const [isPasswordRepeatValidationError, setPasswordRepeatValidationError] = React.useState(false);
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
-            isValid = false;
-        } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
-        }
-
-        if (!password.value || password.value.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
-        }
-
-        if (!name.value || name.value.length < 1) {
-            setNameError(true);
-            setNameErrorMessage('Name is required.');
-            isValid = false;
-        } else {
-            setNameError(false);
-            setNameErrorMessage('');
-        }
-
-        return isValid;
-    };
-
-    const handleSubmit = (event) => {
+    function handleSubmit(event) {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            name: data.get('name'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        if (isEmailValidationError || isLoginValidationError || isPasswordValidationError || isPasswordRepeatValidationError) {
+            return;
+        }
+        const form_data = new FormData(event.currentTarget);
+        axios.post('http://127.0.0.1:8000/auth/signup/', form_data)
+            .then(response => {
+                console.log(response.data);
+                console.log(response.status);
+                setLoginResponseErrorMessages([]);
+                setEmailResponseErrorMessages([]);
+                setPasswordResponseErrorMessages([]);
+                // setNonFieldResponseErrorMessages([]);
+
+                event.target.reset();
+
+                enqueueSnackbar('На указанную почту было отправлено письмо с ссылкой для активации аккаунта.', {
+                    variant: 'info',
+                    preventDuplicate: true,
+                }
+                );
+            })
+            .catch(error => {
+                if (!error.response) {
+                    return;
+                }
+                if (error.response.status === 400) {
+                    const response_data = error.response.data;
+                    setLoginResponseErrorMessages(response_data['username'] || []);
+                    setEmailResponseErrorMessages(response_data['email'] || []);
+                    setPasswordResponseErrorMessages(response_data['password'] || []);
+                    // setNonFieldResponseErrorMessages(response_data['non_field_errors'] || []);
+                }
+                else {
+                    setLoginResponseErrorMessages([]);
+                    setEmailResponseErrorMessages([]);
+                    setPasswordResponseErrorMessages([]);
+                    // setNonFieldResponseErrorMessages([]);
+                }
+                enqueueSnackbar('Появились ошибки при регистрации!', {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
+            });
     };
 
     return (
         <>
             <PrevPageFrame href='/home'>
-                <CssBaseline enableColorScheme />
-                <SignUpContainer direction="column" justifyContent="space-between">
+                <PageCardContainer direction="column" justifyContent="space-between">
                     <Stack
                         sx={{
                             justifyContent: 'center',
@@ -114,11 +90,11 @@ export default function SignUpPage() {
                             p: 2,
                         }}
                     >
-                        <Card variant="outlined">
+                        <PageCard variant="outlined">
                             <Typography
                                 component="h1"
                                 variant="h4"
-                                sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+                                sx={{ width: '100%' }}
                             >
                                 Sign up
                             </Typography>
@@ -127,72 +103,30 @@ export default function SignUpPage() {
                                 onSubmit={handleSubmit}
                                 sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
                             >
-                                <FormControl>
-                                    <FormLabel htmlFor="name">Login</FormLabel>
-                                    <TextField
-                                        autoComplete="name"
-                                        name="name"
-                                        required
-                                        fullWidth
-                                        id="name"
-                                        placeholder="artas"
-                                        error={nameError}
-                                        helperText={nameErrorMessage}
-                                        color={nameError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel htmlFor="email">Email</FormLabel>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        placeholder="your@email.com"
-                                        name="email"
-                                        autoComplete="email"
-                                        variant="outlined"
-                                        error={emailError}
-                                        helperText={emailErrorMessage}
-                                        color={passwordError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel htmlFor="password">Password</FormLabel>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        placeholder="••••••"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                        variant="outlined"
-                                        error={passwordError}
-                                        helperText={passwordErrorMessage}
-                                        color={passwordError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel htmlFor="password">Password</FormLabel>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        placeholder="••••••"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                        variant="outlined"
-                                        error={passwordError}
-                                        helperText={passwordErrorMessage}
-                                        color={passwordError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
+                                <LoginInput
+                                    name='username'
+                                    responseErrors={loginResponseErrorMessages}
+                                    setValidationError={(value) => { setLoginValidationError(value) }}
+                                />
+                                <EmailInput
+                                    name='email'
+                                    responseErrors={emailResponseErrorMessages}
+                                    setValidationError={(value) => { setEmailValidationError(value) }} />
+                                <PasswordInput
+                                    name='password'
+                                    responseErrors={passwordResponseErrorMessages}
+                                    setValidationError={(value) => { setPasswordValidationError(value) }} label="Password" id="password1" />
+                                <PasswordInput
+                                    name='password2'
+                                    setValidationError={(value) => { setPasswordRepeatValidationError(value) }}
+                                    label="Password repeat"
+                                    id="password2"
+                                    componentMapId="password1"
+                                />
                                 <Button
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    onClick={validateInputs}
                                 >
                                     Sign up
                                 </Button>
@@ -213,19 +147,13 @@ export default function SignUpPage() {
                                 <Typography sx={{ color: 'text.secondary' }}>or</Typography>
                             </Divider>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="outlined"
-                                    onClick={() => alert('Sign up with Google')}
-                                    startIcon={<GoogleIcon />}
-                                >
+                                <GoogleConnect type='submit'>
                                     Sign up with Google
-                                </Button>
+                                </GoogleConnect>
                             </Box>
-                        </Card>
+                        </PageCard>
                     </Stack>
-                </SignUpContainer>
+                </PageCardContainer>
             </PrevPageFrame>
         </>
     );

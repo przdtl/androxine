@@ -1,11 +1,11 @@
+
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
+import Toolbar from '@mui/material/Toolbar';
+import { styled, alpha } from '@mui/material/styles';
+
 import SearchFilter from "../components/SearchFilter";
 import TopBottomPagination from "../components/TopBottomPagination";
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import { styled, alpha } from '@mui/material/styles';
-import Toolbar from '@mui/material/Toolbar';
 
 const exercise_categories = [
     { name: 'Legs' },

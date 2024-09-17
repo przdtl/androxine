@@ -1,19 +1,18 @@
 import * as React from 'react';
-import { alpha } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import AppNavbar from './AppNavbar';
+import { alpha } from '@mui/material/styles';
+
 import MainGrid from './MainGrid';
 import SideMenu from './SideMenu';
-import Fab from '@mui/material/Fab';
-import NavigationIcon from '@mui/icons-material/Navigation';
+import AppNavbar from './AppNavbar';
 import ScrollToTopFab from './ScrollToTopFab';
+
 
 export default function Dashboard({ children }) {
   return (
     <>
-      <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
         <SideMenu />
         <AppNavbar />

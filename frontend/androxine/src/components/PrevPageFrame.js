@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
+
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import { styled } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
     position: 'relative',
@@ -62,7 +64,7 @@ export default function PrevPageFrame({
                     </IconButton>
                 </Toolbar>
             </StyledAppBar>
-            <Box sx={{ flex: '1 1', overflow: 'auto' }}>{children}</Box>
+            <Box sx={{ flex: 'flex', overflow: 'auto', height: '100%' }}>{children}</Box>
         </Box>
     );
 }

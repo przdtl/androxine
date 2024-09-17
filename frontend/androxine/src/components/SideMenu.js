@@ -1,6 +1,8 @@
 import * as React from 'react';
+
 import { styled } from '@mui/material/styles';
 import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
+
 import MenuContent from './MenuContent';
 
 const drawerWidth = 240;
