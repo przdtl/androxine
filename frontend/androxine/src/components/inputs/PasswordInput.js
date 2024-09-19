@@ -1,48 +1,52 @@
 import * as React from 'react';
 
+import { useTranslation } from "react-i18next";
+
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 
-function getErrorMessage(password, lookup_password) {
-    if (lookup_password != null) {
-        if (password.value !== lookup_password.value) {
-            return "Passwords are not equals.";
-        }
-        return "";
-    }
-
-    if (!password.value) {
-        return "Password can't be empty.";
-    }
-    if (!/[a-z]/.test(password.value)) {
-        return 'The password must contain lowercase letters.';
-    }
-    if (!/[A-Z]/.test(password.value)) {
-        return 'The password must contain uppercase letters.';
-    }
-    if (!/\d/.test(password.value)) {
-        return 'The password must contain digits.';
-    }
-    if (!/[^A-Za-z0-9]/.test(password.value)) {
-        return 'The password must contain special characters.';
-    }
-    if (password.value.length < 8) {
-        return 'Password must be at least 8 characters long.';
-    }
-};
 
 export default function PasswordInput({
-    setValidationError,
-    label = 'Password',
-    id = 'password_input',
-    name = 'password',
+    label,
     componentMapId,
     responseErrors,
+    setValidationError,
+    name = 'password',
+    id = 'password_input',
     notUseValidators = false,
 }) {
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+    const { t } = useTranslation();
+
+    function getErrorMessage(password, lookup_password) {
+        if (lookup_password != null) {
+            if (password.value !== lookup_password.value) {
+                return t('inputs.password.validation.equality');
+            }
+            return "";
+        }
+
+        if (!password.value) {
+            return t('inputs.password.validation.empty');
+        }
+        if (!/[a-z]/.test(password.value)) {
+            return t('inputs.password.validation.lowercase_letters');
+        }
+        if (!/[A-Z]/.test(password.value)) {
+            return t('inputs.password.validation.uppercase_letters');
+        }
+        if (!/\d/.test(password.value)) {
+            return t('inputs.password.validation.digits');
+        }
+        if (!/[^A-Za-z0-9]/.test(password.value)) {
+            return t('inputs.password.validation.special_characters');
+        }
+        if (password.value.length < 8) {
+            return t('inputs.password.validation.length');
+        }
+    };
 
     const validatePassword = () => {
         const password = document.getElementById(id);
@@ -60,7 +64,9 @@ export default function PasswordInput({
 
     return (
         <FormControl>
-            <FormLabel htmlFor={id}>{label}</FormLabel>
+            <FormLabel htmlFor={id}>
+                {label ? label : t('inputs.password.label')}
+            </FormLabel>
             <TextField
                 required
                 fullWidth

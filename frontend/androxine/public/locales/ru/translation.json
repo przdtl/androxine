@@ -1,0 +1,95 @@
+{
+    "menu_content": {
+        "home": "Дом",
+        "exercises": "Упражнения",
+        "calculator": "Калькулятор",
+        "profile": "Профиль",
+        "templates": "Шаблоны",
+        "workouts": "Тренировки",
+        "weight": "Вес",
+        "login": "Вход",
+        "logout": "Выход"
+    },
+    "signin": {
+        "signin_with_google": "Войдите с помощью Google",
+        "header": "Вход",
+        "submit_button": "Вход",
+        "or": "или",
+        "dont_have_account": "У вас нет учетной записи?",
+        "signup": "Зарегистрируйтесь",
+        "alerts": {
+            "warning": {
+                "errors_when_logging_in": "При входе в систему возникли ошибки"
+            }
+        }
+    },
+    "signup": {
+        "signin_with_google": "Зарегистрируйтесь с помощью Google",
+        "header": "Регистрация",
+        "submit_button": "Зарегистрироваться",
+        "or": "или",
+        "already_have_account": "Уже есть учетная запись?",
+        "signin": "Войдите",
+        "password_repeat_label": "Повторение пароля",
+        "alerts": {
+            "info": {
+                "email_has_been_sent": "На указанную почту было отправлено письмо с ссылкой для активации аккаунта."
+            },
+            "warning": {
+                "errors_during_registration": "При регистрации возникли ошибки!"
+            }
+        }
+    },
+    "signout": {
+        "alerts": {
+            "warning": {
+                "logout_error": "Появилась ошибка при выходе из системы, перезагрузите страницу!"
+            }
+        }
+    },
+    "inputs": {
+        "password": {
+            "label": "Пароль",
+            "validation": {
+                "empty": "Пароль не может быть пустым.",
+                "lowercase_letters": "Пароль должен содержать строчные буквы.",
+                "uppercase_letters": "Пароль должен содержать заглавные буквы.",
+                "digits": "Пароль должен содержать цифры.",
+                "special_characters": "Пароль должен содержать специальные символы.",
+                "length": "Длина пароля должна составлять не менее 8 символов.",
+                "equality": "Пароли не совпадают."
+            }
+        },
+        "email_login": {
+            "label": "Email/ Логин"
+        },
+        "login": {
+            "label": "Логин",
+            "validation": {
+                "empty": "Логин не может быть пустым."
+            }
+        },
+        "email": {
+            "label": "Email",
+            "validation": {
+                "empty": "Email не может быть пустым.",
+                "invalid": "Пожалуйста, введите допустимый адрес электронной почты."
+            }
+        },
+        "search": {
+            "placeholder": "Поиск…"
+        }
+    },
+    "prev_page": {
+        "text": "Назад"
+    },
+    "email_verify": {
+        "success_verify": {
+            "text": "Адрес электронной почты был успешно подтвержден",
+            "additional_text": "Перейдите на страницу входа"
+        },
+        "unsuccess_verify": {
+            "text": "При подтверждении адреса электронной почты произошла ошибка"
+        }
+    }
+}

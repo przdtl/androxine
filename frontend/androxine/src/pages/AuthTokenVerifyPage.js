@@ -5,8 +5,15 @@ import * as React from 'react';
 
 import { useSearchParams } from 'react-router-dom'
 
+import { useTranslation } from 'react-i18next';
+
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
+
+import ErrorIcon from '@mui/icons-material/Error';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 import PrevPageFrame from '../components/PrevPageFrame';
 import { PageCard, PageCardContainer } from '../components/PageCard';
@@ -16,6 +23,7 @@ export const AuthTokenVerifyPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isPageLoad, setPageLoad] = React.useState(false);
     const [isEmailVerified, setEmailVerified] = React.useState(false);
+    const { t } = useTranslation();
 
     const user_id = searchParams.get('user_id');
     const token = searchParams.get('token');
@@ -59,27 +67,36 @@ export const AuthTokenVerifyPage = () => {
                         <PageCard>
                             <Skeleton variant="rounded" />
                         </PageCard>
-                        : isEmailVerified
-                            ?
+                        : (
                             <PageCard variant="outlined">
-                                <Typography
-                                    component="h1"
-                                    variant="h4"
-                                    sx={{ width: '100%' }}
-                                >
-                                    The email address has been successfully verified
-                                </Typography>
+                                <Stack direction="row" alignItems="center" gap={1}>
+                                    {isEmailVerified
+                                        ? <VerifiedIcon color='success' />
+                                        : <ErrorIcon color='error' />
+                                    }
+                                    <Typography
+                                        variant="body1"
+                                        sx={{ width: '100%' }}
+                                    >
+                                        {isEmailVerified
+                                            ? t('email_verify.success_verify.text')
+                                            : t('email_verify.unsuccess_verify.text')
+                                        }
+                                    </Typography>
+                                </Stack>
+                                {isEmailVerified
+                                    ? (
+                                        <Link
+                                            href="/sign-in/"
+                                            variant="body2"
+                                        >
+                                            {t('email_verify.success_verify.additional_text')}
+                                        </Link>
+                                    )
+                                    : ""
+                                }
                             </PageCard>
-                            :
-                            <PageCard>
-                                <Typography
-                                    component="h1"
-                                    variant="h4"
-                                    sx={{ width: '100%' }}
-                                >
-                                    An error occurred while confirming the email address
-                                </Typography>
-                            </PageCard>
+                        )
                     }
                 </PageCardContainer>
             </PrevPageFrame >

@@ -2,7 +2,9 @@ import React from 'react';
 import { SnackbarProvider } from 'notistack'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { createTheme, ThemeProvider, responsiveFontSizes } from '@mui/material/styles';
+
+import * as locales from '@mui/material/locale';
+import { createTheme, ThemeProvider, useColorScheme, responsiveFontSizes } from '@mui/material/styles';
 
 import getTheme from './theme/getTheme';
 import { AuthProvider } from './AuthProvider';
@@ -16,20 +18,29 @@ import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import WorkoutPage from './pages/WorkoutPage';
 import ProfilePage from './pages/ProfilePage';
-import Dashboard from './components/Dashboard';
 import ExercisePage from './pages/ExercisePage';
+import SettingsPage from './pages/SettingsPage';
 import TemplatePage from './pages/TemplatePage';
 import NotFoundPage from './pages/NotFoundPage';
 import CalculatorPage from './pages/CalculatorPage';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthTokenVerifyPage } from './pages/AuthTokenVerifyPage';
+
+import Dashboard from './components/Dashboard';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 import SnackbarCloseButton from './SnackbarCloseButton';
 
 
 export const App = () => {
-  let Theme = createTheme(getTheme('light'));
-  Theme = responsiveFontSizes(Theme, { breakpoints: ['xs', 'sm', 'md', 'lg', 'xl'], factor: 4 });
+  const { mode } = useColorScheme();
+  const [locale, setLocale] = React.useState('ruRU');
+
+  const Theme = createTheme(getTheme(mode));
+  // const themeWithLocale = React.useMemo(
+  //   () => createTheme(Theme, locales[locale]),
+  //   [locale, Theme],
+  // );
+  // Theme = responsiveFontSizes(Theme, { breakpoints: ['xs', 'sm', 'md', 'lg', 'xl'], factor: 4 });
 
   return (
     <>
@@ -47,11 +58,9 @@ export const App = () => {
                   </Dashboard>
                 } />
                 <Route path="/exercise" element={
-                  <ProtectedRoute>
-                    <Dashboard>
-                      <ExercisePage />
-                    </Dashboard>
-                  </ProtectedRoute>
+                  <Dashboard>
+                    <ExercisePage />
+                  </Dashboard>
                 } />
                 <Route path="/calculator" element={
                   <Dashboard>
@@ -85,6 +94,11 @@ export const App = () => {
                       <WeightPage />
                     </Dashboard>
                   </ProtectedRoute>
+                } />
+                <Route path="/settings" element={
+                  <Dashboard>
+                    <SettingsPage />
+                  </Dashboard>
                 } />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>

@@ -4,6 +4,8 @@ import * as React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
+import { useTranslation } from "react-i18next";
+
 import { useSnackbar } from 'notistack'
 
 import Box from '@mui/material/Box';
@@ -14,7 +16,6 @@ import Typography from '@mui/material/Typography';
 
 import PrevPageFrame from '../components/PrevPageFrame';
 import GoogleConnect from '../components/GoogleConnect';
-import ForgotPassword from '../components/ForgotPassword';
 import PasswordInput from '../components/inputs/PasswordInput';
 import EmailLoginInput from '../components/inputs/EmailLoginInput';
 import { PageCard, PageCardContainer } from '../components/PageCard';
@@ -25,10 +26,10 @@ import { useAuth } from '../AuthProvider';
 export default function SignInPage() {
     const [emailLoginResponseErrorMessages, setEmailLoginResponseErrorMessages] = React.useState([]);
     const [passwordResponseErrorMessages, setPasswordResponseErrorMessages] = React.useState([]);
-    // const [nonFieldResponseError, setNonFieldResponseError] = React.useState([]);
 
     const { enqueueSnackbar } = useSnackbar();
-    const { login, csrfToken } = useAuth();
+    const { login } = useAuth();
+    const { t } = useTranslation();
 
     let navigate = useNavigate();
 
@@ -39,7 +40,6 @@ export default function SignInPage() {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
-                // "X-CSRFToken": csrfToken,
             },
         })
             .then(response => {
@@ -47,7 +47,6 @@ export default function SignInPage() {
                 console.log(response.status);
                 setEmailLoginResponseErrorMessages([]);
                 setPasswordResponseErrorMessages([]);
-                // setNonFieldResponseErrorMessages([]);
 
                 login(response.data);
 
@@ -55,7 +54,7 @@ export default function SignInPage() {
                 navigate('/home');
             })
             .catch(error => {
-                enqueueSnackbar('Появились ошибки при входе!', {
+                enqueueSnackbar(t('signin.alerts.warning.errors_when_logging_in'), {
                     variant: 'warning',
                     preventDuplicate: true,
                 });
@@ -66,12 +65,10 @@ export default function SignInPage() {
                     const response_data = error.response.data;
                     setEmailLoginResponseErrorMessages(response_data['username'] || []);
                     setPasswordResponseErrorMessages(response_data['password'] || []);
-                    // setNonFieldResponseErrorMessages(response_data['non_field_errors'] || []);
                 }
                 else {
                     setEmailLoginResponseErrorMessages([]);
                     setPasswordResponseErrorMessages([]);
-                    // setNonFieldResponseErrorMessages([]);
                 }
             });
     };
@@ -86,7 +83,7 @@ export default function SignInPage() {
                             variant="h4"
                             sx={{ width: '100%' }}
                         >
-                            Sign in
+                            {t('signin.header')}
                         </Typography>
                         <Box
                             component="form"
@@ -101,32 +98,30 @@ export default function SignInPage() {
                         >
                             <EmailLoginInput responseError={emailLoginResponseErrorMessages} />
                             <PasswordInput responseError={passwordResponseErrorMessages} notUseValidators />
-                            {/* <ForgotPassword open={open} handleClose={handleClose} /> */}
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                            // onClick={validateInputs}
                             >
-                                Sign in
+                                {t('signin.submit_button')}
                             </Button>
                             <Typography sx={{ textAlign: 'center' }}>
-                                Don&apos;t have an account?{' '}
+                                {t('signin.dont_have_account') + ' '}
                                 <span>
                                     <Link
                                         href="/sign-up/"
                                         variant="body2"
                                         sx={{ alignSelf: 'center' }}
                                     >
-                                        Sign up
+                                        {t('signin.signup')}
                                     </Link>
                                 </span>
                             </Typography>
                         </Box>
-                        <Divider>or</Divider>
+                        <Divider>{t('signin.or')}</Divider>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <GoogleConnect type='submit'>
-                                Sign in with Google
+                                {t('signin.signin_with_google')}
                             </GoogleConnect>
                         </Box>
                     </PageCard>

@@ -1,0 +1,95 @@
+{
+    "menu_content": {
+        "home": "Home",
+        "exercises": "Exercises",
+        "calculator": "Calculator",
+        "profile": "Profile",
+        "templates": "Templates",
+        "workouts": "Workouts",
+        "weight": "Weight",
+        "login": "Login",
+        "logout": "Logout"
+    },
+    "signin": {
+        "signin_with_google": "Sign in with Google",
+        "header": "Sign in",
+        "submit_button": "Sign in",
+        "or": "or",
+        "dont_have_account": "Don't have an account?",
+        "signup": "Sign up",
+        "alerts": {
+            "warning": {
+                "errors_when_logging_in": "Errors occurred when logging in"
+            }
+        }
+    },
+    "signup": {
+        "signin_with_google": "Sign up with Google",
+        "header": "Sign up",
+        "submit_button": "Sign up",
+        "or": "or",
+        "already_have_account": "Already have an account?",
+        "signin": "Sign in",
+        "password_repeat_label": "Password repeat",
+        "alerts": {
+            "info": {
+                "email_has_been_sent": "An email was sent to the specified email address with a link to activate the account."
+            },
+            "warning": {
+                "errors_during_registration": "Errors occurred during registration!"
+            }
+        }
+    },
+    "signout": {
+        "alerts": {
+            "warning": {
+                "logout_error": "An error appeared when logging out, reload the page!"
+            }
+        }
+    },
+    "inputs": {
+        "password": {
+            "label": "Password",
+            "validation": {
+                "empty": "Password can't be empty.",
+                "lowercase_letters": "The password must contain lowercase letters.",
+                "uppercase_letters": "The password must contain uppercase letters.",
+                "digits": "The password must contain digits.",
+                "special_characters": "The password must contain special characters.",
+                "length": "Password must be at least 8 characters long.",
+                "equality": "Passwords are not equals."
+            }
+        },
+        "email_login": {
+            "label": "Email/ Login"
+        },
+        "login": {
+            "label": "Login",
+            "validation": {
+                "empty": "Login can't be empty."
+            }
+        },
+        "email": {
+            "label": "Email",
+            "validation": {
+                "empty": "Email can't be empty.",
+                "invalid": "Please enter a valid email address."
+            }
+        },
+        "search": {
+            "placeholder": "Search…"
+        }
+    },
+    "prev_page": {
+        "text": "Back"
+    },
+    "email_verify": {
+        "success_verify": {
+            "text": "The email address has been successfully verified",
+            "additional_text": "Go to the login page"
+        },
+        "unsuccess_verify": {
+            "text": "An error occurred while confirming the email address"
+        }
+    }
+}

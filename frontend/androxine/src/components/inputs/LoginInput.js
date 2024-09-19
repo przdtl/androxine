@@ -1,24 +1,28 @@
 import * as React from 'react';
 
+import { useTranslation } from "react-i18next";
+
 import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 
-function getErrorMessage(login) {
-    if (!login.value) {
-        return "Login can't be empty.";
-    }
-}
 
 export default function LoginInput({
-    setValidationError,
-    label = 'Login',
-    id = 'login_input',
-    name = 'username',
+    label,
     responseErrors,
+    setValidationError,
+    name = 'username',
+    id = 'login_input',
 }) {
     const [loginErrorMessage, setLoginErrorMessage] = React.useState('');
+    const { t } = useTranslation();
+
+    function getErrorMessage(login) {
+        if (!login.value) {
+            return t('inputs.login.validation.empty');
+        }
+    }
 
     const validateLogin = () => {
         const login = document.getElementById(id);
@@ -30,7 +34,9 @@ export default function LoginInput({
 
     return (
         < FormControl >
-            <FormLabel htmlFor={id}>{label}</FormLabel>
+            <FormLabel htmlFor={id}>
+                {label ? label : t('inputs.login.label')}
+            </FormLabel>
             <TextField
                 required
                 fullWidth

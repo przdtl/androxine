@@ -2,6 +2,8 @@ import axios from 'axios';
 
 import { useSnackbar } from 'notistack';
 
+import { useTranslation } from "react-i18next";
+
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
@@ -15,6 +17,7 @@ export default function LoginLogoutButton({
 }) {
     const { isAuth, logout, csrfToken, getCSRF } = useAuth();
     const { enqueueSnackbar } = useSnackbar();
+    const { t } = useTranslation();
 
     function handleLogout() {
         axios({
@@ -33,7 +36,7 @@ export default function LoginLogoutButton({
             })
             .catch(error => {
                 console.log(error);
-                enqueueSnackbar('Появилась ошибка при выходе из системы, перезагрузите страницу!', {
+                enqueueSnackbar(t('signout.alerts.warning.logout_error'), {
                     variant: 'warning',
                     preventDuplicate: true,
                 });
@@ -47,7 +50,7 @@ export default function LoginLogoutButton({
             {...(isAuth ? { onClick: handleLogout } : { href: '/sign-in' })}
         >
             <Typography variant='body1'>
-                {isAuth ? 'Logout' : 'Login'}
+                {isAuth ? t("menu_content.logout") : t("menu_content.login")}
             </Typography>
         </Button>
     );

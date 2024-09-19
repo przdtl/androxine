@@ -2,6 +2,10 @@ import axios from 'axios'
 
 import * as React from 'react';
 
+import { useTranslation } from "react-i18next";
+
+import { useSnackbar } from 'notistack'
+
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -16,21 +20,19 @@ import LoginInput from '../components/inputs/LoginInput';
 import PasswordInput from '../components/inputs/PasswordInput';
 import { PageCard, PageCardContainer } from '../components/PageCard';
 
-import { useSnackbar } from 'notistack'
-
 
 export default function SignUpPage() {
-    const { enqueueSnackbar } = useSnackbar();
-
     const [emailResponseErrorMessages, setEmailResponseErrorMessages] = React.useState([]);
     const [loginResponseErrorMessages, setLoginResponseErrorMessages] = React.useState([]);
     const [passwordResponseErrorMessages, setPasswordResponseErrorMessages] = React.useState([]);
-    // const [nonFieldResponseErrorMessages, setNonFieldResponseErrorMessages] = React.useState([]);
 
     const [isEmailValidationError, setEmailValidationError] = React.useState(false);
     const [isLoginValidationError, setLoginValidationError] = React.useState(false);
     const [isPasswordValidationError, setPasswordValidationError] = React.useState(false);
     const [isPasswordRepeatValidationError, setPasswordRepeatValidationError] = React.useState(false);
+
+    const { enqueueSnackbar } = useSnackbar();
+    const { t } = useTranslation();
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -45,11 +47,10 @@ export default function SignUpPage() {
                 setLoginResponseErrorMessages([]);
                 setEmailResponseErrorMessages([]);
                 setPasswordResponseErrorMessages([]);
-                // setNonFieldResponseErrorMessages([]);
 
                 event.target.reset();
 
-                enqueueSnackbar('На указанную почту было отправлено письмо с ссылкой для активации аккаунта.', {
+                enqueueSnackbar(t('signup.alerts.info.email_has_been_sent'), {
                     variant: 'info',
                     preventDuplicate: true,
                 }
@@ -64,15 +65,13 @@ export default function SignUpPage() {
                     setLoginResponseErrorMessages(response_data['username'] || []);
                     setEmailResponseErrorMessages(response_data['email'] || []);
                     setPasswordResponseErrorMessages(response_data['password'] || []);
-                    // setNonFieldResponseErrorMessages(response_data['non_field_errors'] || []);
                 }
                 else {
                     setLoginResponseErrorMessages([]);
                     setEmailResponseErrorMessages([]);
                     setPasswordResponseErrorMessages([]);
-                    // setNonFieldResponseErrorMessages([]);
                 }
-                enqueueSnackbar('Появились ошибки при регистрации!', {
+                enqueueSnackbar(t('signup.alerts.warning.errors_during_registration'), {
                     variant: 'warning',
                     preventDuplicate: true,
                 });
@@ -96,7 +95,7 @@ export default function SignUpPage() {
                                 variant="h4"
                                 sx={{ width: '100%' }}
                             >
-                                Sign up
+                                {t('signup.header')}
                             </Typography>
                             <Box
                                 component="form"
@@ -114,41 +113,44 @@ export default function SignUpPage() {
                                     setValidationError={(value) => { setEmailValidationError(value) }} />
                                 <PasswordInput
                                     name='password'
+                                    id="password1"
                                     responseErrors={passwordResponseErrorMessages}
-                                    setValidationError={(value) => { setPasswordValidationError(value) }} label="Password" id="password1" />
+                                    setValidationError={(value) => { setPasswordValidationError(value) }} />
                                 <PasswordInput
                                     name='password2'
-                                    setValidationError={(value) => { setPasswordRepeatValidationError(value) }}
-                                    label="Password repeat"
+                                    label={t('signup.password_repeat_label')}
                                     id="password2"
                                     componentMapId="password1"
+                                    setValidationError={(value) => { setPasswordRepeatValidationError(value) }}
                                 />
                                 <Button
                                     type="submit"
                                     fullWidth
                                     variant="contained"
                                 >
-                                    Sign up
+                                    {t('signup.submit_button')}
                                 </Button>
                                 <Typography sx={{ textAlign: 'center' }}>
-                                    Already have an account?{' '}
+                                    {t('signup.already_have_account') + ' '}
                                     <span>
                                         <Link
                                             href="/sign-in/"
                                             variant="body2"
                                             sx={{ alignSelf: 'center' }}
                                         >
-                                            Sign in
+                                            {t('signup.signin')}
                                         </Link>
                                     </span>
                                 </Typography>
                             </Box>
                             <Divider>
-                                <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+                                <Typography sx={{ color: 'text.secondary' }}>
+                                    {t('signup.or')}
+                                </Typography>
                             </Divider>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                                 <GoogleConnect type='submit'>
-                                    Sign up with Google
+                                    {t('signup.signin_with_google')}
                                 </GoogleConnect>
                             </Box>
                         </PageCard>
