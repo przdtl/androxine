@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider, useColorScheme, responsiveFontSizes } from 
 
 import getTheme from './theme/getTheme';
 import { AuthProvider } from './AuthProvider';
+import { useLocale } from './LocaleProvider';
 
 import './App.css';
 import '@fontsource/inter/600.css';
@@ -27,24 +28,23 @@ import { AuthTokenVerifyPage } from './pages/AuthTokenVerifyPage';
 
 import Dashboard from './components/Dashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
-
-import SnackbarCloseButton from './SnackbarCloseButton';
+import SnackbarCloseButton from './components/SnackbarCloseButton';
 
 
 export const App = () => {
   const { mode } = useColorScheme();
-  const [locale, setLocale] = React.useState('ruRU');
+  const { locale } = useLocale();
 
-  const Theme = createTheme(getTheme(mode));
-  // const themeWithLocale = React.useMemo(
-  //   () => createTheme(Theme, locales[locale]),
-  //   [locale, Theme],
-  // );
+  const theme = React.useMemo(
+    () => createTheme(getTheme(mode), locales[locale]),
+    [locale],
+  );
+
   // Theme = responsiveFontSizes(Theme, { breakpoints: ['xs', 'sm', 'md', 'lg', 'xl'], factor: 4 });
 
   return (
     <>
-      <ThemeProvider theme={Theme} >
+      <ThemeProvider theme={theme} >
         <AuthProvider>
           <SnackbarProvider action={snackbarKey => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
             <BrowserRouter>
