@@ -19,6 +19,7 @@ import EmailInput from '../components/inputs/EmailInput';
 import LoginInput from '../components/inputs/LoginInput';
 import PasswordInput from '../components/inputs/PasswordInput';
 import { PageCard, PageCardContainer } from '../components/PageCard';
+import i18n from '../i18n';
 
 
 export default function SignUpPage() {
@@ -32,7 +33,7 @@ export default function SignUpPage() {
     const [isPasswordRepeatValidationError, setPasswordRepeatValidationError] = React.useState(false);
 
     const { enqueueSnackbar } = useSnackbar();
-    const { t } = useTranslation();
+    const { i18n, t } = useTranslation();
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -40,7 +41,11 @@ export default function SignUpPage() {
             return;
         }
         const form_data = new FormData(event.currentTarget);
-        axios.post('http://127.0.0.1:8000/auth/signup/', form_data)
+        axios.post('http://127.0.0.1:8000/auth/signup/', form_data, {
+            headers: {
+                "Accept-Language": i18n.language,
+            }
+        })
             .then(response => {
                 console.log(response.data);
                 console.log(response.status);

@@ -29,7 +29,7 @@ export default function SignInPage() {
 
     const { enqueueSnackbar } = useSnackbar();
     const { login } = useAuth();
-    const { t } = useTranslation();
+    const { i18n, t } = useTranslation();
 
     let navigate = useNavigate();
 
@@ -40,6 +40,7 @@ export default function SignInPage() {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
+                "Accept-Language": i18n.language,
             },
         })
             .then(response => {
