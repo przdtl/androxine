@@ -332,11 +332,11 @@ export const inputsCustomizations = {
         '&:hover': {
           borderColor: brand[300],
         },
-        '&.Mui-focusVisible': {
-          outline: `3px solid ${alpha(brand[500], 0.5)}`,
-          outlineOffset: '2px',
-          borderColor: brand[400],
-        },
+        // '&.Mui-focusVisible': {
+        //   outline: `3px solid ${alpha(brand[500], 0.5)}`,
+        //   outlineOffset: '2px',
+        //   borderColor: brand[400],
+        // },
         '&.Mui-checked': {
           color: 'white',
           backgroundColor: brand[500],
@@ -353,11 +353,11 @@ export const inputsCustomizations = {
           '&:hover': {
             borderColor: brand[300],
           },
-          '&.Mui-focusVisible': {
-            borderColor: brand[400],
-            outline: `3px solid ${alpha(brand[500], 0.5)}`,
-            outlineOffset: '2px',
-          },
+          // '&.Mui-focusVisible': {
+          //   borderColor: brand[400],
+          //   outline: `3px solid ${alpha(brand[500], 0.5)}`,
+          //   outlineOffset: '2px',
+          // },
         }),
       }),
     },
@@ -390,10 +390,10 @@ export const inputsCustomizations = {
         '&:hover': {
           borderColor: gray[400],
         },
-        [`&.${outlinedInputClasses.focused}`]: {
-          outline: `3px solid ${alpha(brand[500], 0.5)}`,
-          borderColor: brand[400],
-        },
+        // [`&.${outlinedInputClasses.focused}`]: {
+        //   outline: `3px solid ${alpha(brand[500], 0.5)}`,
+        //   borderColor: brand[400],
+        // },
         ...theme.applyStyles('dark', {
           '&:hover': {
             borderColor: gray[500],

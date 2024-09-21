@@ -7,25 +7,26 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
-export default function Search() {
+export default function Search({
+  value,
+  handleChange = () => { },
+}) {
   const { t } = useTranslation();
 
   return (
-    <FormControl sx={{ width: { xs: '100%', md: '35ch' } }} variant="outlined">
+    <FormControl sx={{ width: '100%', height: '100%' }} variant="outlined" >
       <OutlinedInput
+        value={value}
+        onChange={handleChange}
         size="small"
         id="search"
         placeholder={t('inputs.search.placeholder')}
         sx={{ flexGrow: 1 }}
-        startAdornment={
-          <InputAdornment position="start" sx={{ color: 'text.primary' }}>
-            {/* <SearchRoundedIcon fontSize="small" /> */}
-          </InputAdornment>
-        }
-        inputProps={{
-          'aria-label': 'search',
-        }}
+        startAdornment={<InputAdornment position="start" sx={{ color: 'text.primary' }} />}
+      // inputProps={{
+      //   'aria-label': 'search',
+      // }}
       />
-    </FormControl>
+    </FormControl >
   );
 }

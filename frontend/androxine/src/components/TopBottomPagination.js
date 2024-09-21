@@ -1,37 +1,42 @@
 import * as React from 'react';
 
-import TablePagination from "@mui/material/TablePagination";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Pagination from '@mui/material/Pagination';
 
 
-export default function TopBottomPagination({ children }) {
-    const [page, setPage] = React.useState(2);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
+export default function TopBottomPagination({
+    children,
+    handleChangePage,
+    page,
+    page_count = 8,
+    next_page = null,
+}) {
 
     function PaginationInstance() {
         return (
-            <TablePagination
-                component="div"
-                count={100}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                // pageSizeOptions={[10, 20, 50]}
-                autoHeight
-                showFirstButton
-                showLastButton
-                sx={{
-                }}
-            />
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+            }}>
+                <Pagination
+                    count={page_count}
+                    page={page}
+                    onChange={handleChangePage}
+                    sx={{
+                        display: { md: 'block', xs: 'none' }
+                    }}
+                />
+                <Pagination
+                    siblingCount={0}
+                    count={page_count}
+                    page={page}
+                    onChange={handleChangePage}
+                    sx={{
+                        display: { md: 'none', xs: 'block' }
+                    }}
+                />
+            </Box>
         );
     };
 
@@ -39,8 +44,14 @@ export default function TopBottomPagination({ children }) {
         <>
             <PaginationInstance />
             {children}
+            {next_page &&
+                <Button
+                    fullWidth
+                >
+                    Show more
+                </Button>
+            }
             <PaginationInstance />
-
         </>
     );
 }
