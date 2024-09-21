@@ -9,7 +9,7 @@ from rest_framework.generics import (
 from drf_yasg.utils import swagger_auto_schema
 
 from config.utils import UpdateRequestManager
-from config.permissions import IsAdminOrAuthReadOnly
+from config.permissions import IsAdminOrAuthReadOnly, IsAdminOrReadOnly
 
 from exercise.models import Exercise, ExerciseCategory, UserExerciseSettings
 from exercise.documents import ExerciseDocument
@@ -34,7 +34,7 @@ from exercise.services import get_exercise_elasticsearch_query
 class ExerciseCategoryListCreateView(ListCreateAPIView):
     serializer_class = ExerciseCategorySerializer
     queryset = ExerciseCategory.objects.all()
-    permission_classes = [IsAdminOrAuthReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
 
 @method_decorator(cache_page(60 * 30, key_prefix=f'{ExerciseCategory.__name__}_retrieve'), name='retrieve')
@@ -42,7 +42,7 @@ class ExerciseCategoryListCreateView(ListCreateAPIView):
 class ExerciseCategoryRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExerciseCategorySerializer
     queryset = ExerciseCategory.objects.all()
-    permission_classes = [IsAdminOrAuthReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'put', 'delete']
     lookup_url_kwarg = 'slug'
     lookup_field = 'slug'
@@ -53,7 +53,7 @@ class ExerciseListCreateView(ListCreateAPIView):
     serializer_class = ExerciseListSerializer
     list_serializer_class = ExerciseListSerializer
     create_serializer_class = ExerciseCreateSerializer
-    permission_classes = [IsAdminOrAuthReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         input_serializer = ExerciseListSwaggerSerializer(
@@ -108,7 +108,7 @@ class ExerciseListCreateView(ListCreateAPIView):
 class ExerciseRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExericseManageSerializer
     queryset = Exercise.objects.all()
-    permission_classes = [IsAdminOrAuthReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
 

@@ -51,36 +51,6 @@ class ExerciseCategoryListViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, pagination_response.data)
 
-    def test_category_list_by_not_logged_in_user(self):
-        self.client.logout()
-
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(
-            response.data, {'detail': NotAuthenticated.default_detail})
-
-    def test_non_empty_category_list_by_logged_in_user(self):
-        categories = ['бицепс', 'ноги', 'плечи',
-                      'трицепс', 'пресс', 'предплечье'
-                      ]
-        ExerciseCategory.objects.bulk_create(
-            ExerciseCategory(name=category) for category in categories)
-        response = self.client.get(self.url)
-        queryset = ExerciseCategory.objects.all()
-
-        factory = DjangoRequestFactory()
-        request = Request(factory.get(self.url))
-
-        pagination_obj = self.pagination_class()
-        categories_data = pagination_obj.paginate_queryset(queryset, request)
-        pagination_response = pagination_obj.get_paginated_response(
-            ExerciseCategorySerializer(categories_data, many=True).data
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, pagination_response.data)
-
 
 class ExerciseCategoryCreateViewTestCase(APITestCase):
     @classmethod

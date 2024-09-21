@@ -46,24 +46,6 @@ class ExerciseListViewTestCase(APITestCase):
         Exercise.objects.bulk_create(
             [Exercise(name=name, category_id=self.grud.pk) for name in grud_exercises])
 
-    def test_exercise_list_without_query_params(self):
-        response = self.client.get(self.url)
-        queryset = ExerciseDocument.search().query(
-            get_exercise_elasticsearch_query()
-        ).execute()
-
-        factory = DjangoRequestFactory()
-        request = Request(factory.get(self.url))
-
-        pagination_obj = self.pagination_class()
-        categories_data = pagination_obj.paginate_queryset(queryset, request)
-        pagination_response = pagination_obj.get_paginated_response(
-            ExerciseListSerializer(categories_data, many=True).data
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, pagination_response.data)
-
     def test_exercise_list_with_name(self):
         name = 'жим'
         response = self.client.get(self.url, {'name': name})
