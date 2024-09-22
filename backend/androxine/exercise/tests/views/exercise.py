@@ -2,15 +2,11 @@ from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
 from rest_framework import status
-from rest_framework.request import Request
-from rest_framework.settings import api_settings
-from rest_framework.test import APITestCase, DjangoRequestFactory
+from rest_framework.test import APITestCase
 from rest_framework.exceptions import NotAuthenticated, PermissionDenied
 
-from exercise.documents import ExerciseDocument
-from exercise.services import get_exercise_elasticsearch_query
 from exercise.models import ExerciseCategory, Exercise
-from exercise.serializers import ExerciseListSerializer, ExerciseCreateSerializer
+from exercise.serializers import ExerciseCreateSerializer
 
 UserModel = get_user_model()
 
