@@ -2,6 +2,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
 from rest_framework import status
+from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView, ListCreateAPIView,
@@ -9,7 +10,7 @@ from rest_framework.generics import (
 from drf_yasg.utils import swagger_auto_schema
 
 from config.utils import UpdateRequestManager
-from config.permissions import IsAdminOrAuthReadOnly, IsAdminOrReadOnly
+from config.permissions import IsAdminOrReadOnly
 
 from exercise.models import Exercise, ExerciseCategory, UserExerciseSettings
 from exercise.documents import ExerciseDocument
@@ -35,6 +36,9 @@ class ExerciseCategoryListCreateView(ListCreateAPIView):
     serializer_class = ExerciseCategorySerializer
     queryset = ExerciseCategory.objects.all()
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['name']
+    ordering = ['name']
 
 
 @method_decorator(cache_page(60 * 30, key_prefix=f'{ExerciseCategory.__name__}_retrieve'), name='retrieve')
@@ -63,8 +67,11 @@ class ExerciseListCreateView(ListCreateAPIView):
 
         category = input_serializer.data.get('category')
         name = input_serializer.data.get('name')
+        ordering = input_serializer.data.get('ordering')
 
-        search = ExerciseDocument.search().query(
+        category = category.split(',') if isinstance(category, str) else []
+
+        search = ExerciseDocument.search().sort(ordering).query(
             get_exercise_elasticsearch_query(name, category)
         )
         response = search.execute()

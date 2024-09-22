@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase, DjangoRequestFactory
-from rest_framework.exceptions import NotAuthenticated
 
 from exercise.models import ExerciseCategory
 from exercise.serializers import ExerciseCategorySerializer

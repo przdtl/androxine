@@ -9,6 +9,7 @@ class ExerciseDocument(Document):
 
     category = fields.TextField(attr='category.name')
     slug = fields.TextField(attr='slug')
+    name = fields.TextField(attr='name', fielddata=True)
 
     class Index:
         name = 'exercise'
@@ -21,5 +22,4 @@ class ExerciseDocument(Document):
         model = Exercise
         fields = [
             'id',
-            'name',
         ]

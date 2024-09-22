@@ -35,6 +35,19 @@ class ExerciseListSwaggerSerializer(serializers.ModelSerializer):
     name = serializers.CharField(
         required=False,
     )
+    ordering = serializers.CharField(
+        required=False,
+        default='name',
+    )
+
+    def validate(self, attrs):
+        available_ordering_values = ['name', '-name']
+        ordering = attrs['ordering']
+        if ordering:
+            if ordering not in available_ordering_values:
+                raise serializers.ValidationError('Invalid ordering value')
+
+        return attrs
 
     class Meta:
         model = Exercise

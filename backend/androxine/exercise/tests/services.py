@@ -11,15 +11,12 @@ class ExerciseElasticsearchQueryTest(TestCase):
     })
     non_empty_elasticsearch_query = Q({
         "bool": {
-            "should": []
+            "must": []
         }
     })
 
     def test_get_query_without_parameters(self):
-        query = get_exercise_elasticsearch_query(
-            name=None,
-            category=None
-        )
+        query = get_exercise_elasticsearch_query()
 
         empty_elasticsearch_query = Q({
             "match_all": {},
@@ -31,13 +28,13 @@ class ExerciseElasticsearchQueryTest(TestCase):
         category = 'category'
         query = get_exercise_elasticsearch_query(
             name=None,
-            category=category
+            category=[category]
         )
 
         elasticsearch_query = Q({
             "bool": {
-                "should": [
-                    {'match': {"category": category}}
+                "filter": [
+                    {'terms': {"category": [category]}}
                 ]
             }
         })
@@ -53,7 +50,7 @@ class ExerciseElasticsearchQueryTest(TestCase):
 
         elasticsearch_query = Q({
             "bool": {
-                "should": [
+                "must": [
                     {'match': {"name": name}}
                 ]
             }
