@@ -24,8 +24,8 @@ def get_exercise_elasticsearch_query(name: Optional[str] = None, category: list[
     elasticsearch_query = Q(query)
 
     logger.info(
-        'A query was received from elasticsearch with input data: name - {}, category - {}'.format(
-            name, category
+        'A query was received from elasticsearch with input data: name - {}, category - {}, query - {}'.format(
+            name, category, query
         ))
 
     return elasticsearch_query

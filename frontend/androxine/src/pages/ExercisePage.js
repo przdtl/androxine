@@ -35,7 +35,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     '&:last-child td, &:last-child th': {
         border: 0,
     },
@@ -44,7 +43,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.background.default,
-        // color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -60,12 +58,14 @@ export default function ExercisePage() {
     const [exercisePageCount, setExercisePageCount] = React.useState(10);
     const [exerciseCurrentPage, setExerciseCurrentPage] = React.useState(1);
     const [exerciseNextPage, setExerciseNextPage] = React.useState(null);
+    const [isOverwriteExercises, setIsOverwriteExercises] = React.useState(true);
 
     const { enqueueSnackbar } = useSnackbar();
     const { i18n, t } = useTranslation();
 
     const handleReorder = () => {
         setIsAscendingNames(!isAscendingNames);
+        setExerciseCurrentPage(1);
     };
 
     const handleSearchChange = (event) => {
@@ -78,6 +78,11 @@ export default function ExercisePage() {
 
     const handleChangePage = (event, value) => {
         setExerciseCurrentPage(value);
+    };
+
+    const handleShowMore = () => {
+        setIsOverwriteExercises(false);
+        setExerciseCurrentPage(exerciseCurrentPage + 1);
     };
 
     const handleGetCategories = () => {
@@ -104,6 +109,12 @@ export default function ExercisePage() {
     const handleGetExercises = () => {
         axios({
             url: 'http://127.0.0.1:8000/exercise/',
+            params: {
+                name: searchExerciseName,
+                category: selectedCategories.join(),
+                ordering: (isAscendingNames ? '' : "-") + 'name',
+                page: exerciseCurrentPage,
+            },
             method: 'get',
             headers: {
                 "Content-Type": "application/json",
@@ -112,12 +123,13 @@ export default function ExercisePage() {
         })
             .then(response => {
                 const data = response.data;
-                setExerciseList(data.results);
+                setExerciseList(isOverwriteExercises ? data.results : (exerciseList) => [...exerciseList, ...data.results]);
                 setExercisePageCount(data.total_pages);
                 setExerciseNextPage(data.links.next);
+                setIsOverwriteExercises(true);
             })
             .catch(error => {
-                enqueueSnackbar(t('ошибка получения упражнений'), {
+                enqueueSnackbar(t('exercises_page.alerts.warning.loading_error'), {
                     variant: 'warning',
                     preventDuplicate: true,
                 });
@@ -129,10 +141,14 @@ export default function ExercisePage() {
         handleGetExercises();
     }, []);
 
+    useEffect(() => {
+        handleGetExercises();
+    }, [isAscendingNames, exerciseCurrentPage]);
+
     return (
         <>
             <h1>
-                Exercises
+                {t('exercises_page.header')}
             </h1>
             <Grid2
                 container
@@ -148,27 +164,31 @@ export default function ExercisePage() {
                 </Grid2>
                 <Grid2 size={{ xs: 14, sm: 7, xl: 3 }}>
                     <MultipleSelectChip
+                        text_label={t('exercises_page.categories')}
                         value={selectedCategories}
                         items_list={categories}
                         handleChange={handleSelectChange}
+                        {...(!categories.length ? { disabled: true } : {})}
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 4, sm: 3, xl: 1 }}>
                     <Button
                         color="primary"
                         variant="contained"
+                        onClick={handleGetExercises}
                         sx={{ width: '100%' }}
                     >
                         <SearchIcon />
-                        Find
+                        {t('exercises_page.search_button_label')}
                     </Button>
                 </Grid2>
             </Grid2>
             <TopBottomPagination
-                handleChangePage={handleChangePage}
                 page={exerciseCurrentPage}
                 next_page={exerciseNextPage}
                 page_count={exercisePageCount}
+                handleChangePage={handleChangePage}
+                handleShowMore={handleShowMore}
             >
                 <TableContainer component={Paper}>
                     <Table aria-label="simple table">
@@ -176,8 +196,11 @@ export default function ExercisePage() {
                             <TableRow>
                                 <StyledTableCell colSpan={2}>
                                     <Stack alignItems="center" direction="row" gap={2}>
-                                        <Typography variant="body1">Название</Typography>
-                                        <IconButton onClick={handleReorder} size="small">
+                                        <Typography variant="body1">{t('exercises_page.exercise_name_label')}</Typography>
+                                        <IconButton
+                                            onClick={handleReorder}
+                                            {...(!exerciseList.length ? { disabled: true } : {})}
+                                            size="small">
                                             {isAscendingNames
                                                 ? <ArrowUpwardIcon />
                                                 : <ArrowDownwardIcon />
@@ -189,13 +212,13 @@ export default function ExercisePage() {
                         </TableHead>
                         <TableBody>
                             {!exerciseList.length &&
-                                <Typography>
-                                    нет нхуя
+                                <Typography sx={{ m: 1 }}>
+                                    {t('exercises_page.empty_table_message')}
                                 </Typography>
                             }
                             {exerciseList.map((exercise) => (
                                 <StyledTableRow
-                                    key={exercise.name}
+                                    key={exercise.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">

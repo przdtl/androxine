@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useTranslation } from "react-i18next";
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Pagination from '@mui/material/Pagination';
@@ -8,10 +10,12 @@ import Pagination from '@mui/material/Pagination';
 export default function TopBottomPagination({
     children,
     handleChangePage,
+    handleShowMore,
     page,
     page_count = 8,
     next_page = null,
 }) {
+    const { t } = useTranslation();
 
     function PaginationInstance() {
         return (
@@ -47,8 +51,9 @@ export default function TopBottomPagination({
             {next_page &&
                 <Button
                     fullWidth
+                    onClick={handleShowMore}
                 >
-                    Show more
+                    {t('top_bottom_pagination.show_more')}
                 </Button>
             }
             <PaginationInstance />

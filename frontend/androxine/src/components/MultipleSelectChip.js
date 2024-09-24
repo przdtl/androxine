@@ -20,9 +20,11 @@ const MenuProps = {
 };
 
 export default function MultipleSelectChip({
+    text_label,
     value = [],
     items_list = [],
     handleChange = () => { },
+    ...props
 }) {
     const theme = useTheme();
 
@@ -38,11 +40,12 @@ export default function MultipleSelectChip({
                     return (
                         <>
                             <Chip label={selected.length} sx={{ mx: 1 }} />
-                            <Typography>Категорий</Typography>
+                            <Typography>{text_label}</Typography>
                         </>
                     );
                 }}
                 MenuProps={MenuProps}
+                {...props}
             >
                 {items_list.map((item) => (
                     <MenuItem

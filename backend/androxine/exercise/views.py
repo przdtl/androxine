@@ -71,9 +71,10 @@ class ExerciseListCreateView(ListCreateAPIView):
 
         category = category.split(',') if isinstance(category, str) else []
 
-        search = ExerciseDocument.search().sort(ordering).query(
+        search = ExerciseDocument.search().query(
             get_exercise_elasticsearch_query(name, category)
-        )
+        ).sort(ordering).extra(size=1000)
+
         response = search.execute()
 
         return response
@@ -91,16 +92,16 @@ class ExerciseListCreateView(ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+    # def list(self, request, *args, **kwargs):
+    #     queryset = self.filter_queryset(self.get_queryset())
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.list_serializer_class(page, many=True)
-            return self.get_paginated_response(serializer.data)
+    #     page = self.paginate_queryset(queryset)
+    #     if page is not None:
+    #         serializer = self.list_serializer_class(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
 
-        serializer = self.list_serializer_class(queryset, many=True)
-        return Response(serializer.data)
+    #     serializer = self.list_serializer_class(queryset, many=True)
+    #     return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.create_serializer_class(data=request.data)

@@ -17,7 +17,7 @@ export default function EmailLoginInput({
     const { t } = useTranslation();
 
     return (
-        < FormControl >
+        <FormControl>
             <FormLabel htmlFor={id}>
                 {label ? label : t('inputs.email_login.label')}
             </FormLabel>

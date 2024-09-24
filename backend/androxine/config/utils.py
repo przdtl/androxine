@@ -79,7 +79,7 @@ def delete_cache(key_prefix: str):
     """
     Delete all cache keys with the given prefix.
     """
-    keys_pattern = f"*.{key_prefix}_*.{settings.LANGUAGE_CODE}.{settings.TIME_ZONE}"
+    keys_pattern = f"*.{key_prefix}_*.{settings.TIME_ZONE}"
     cache.delete_pattern(keys_pattern)
     logger.info(
         'All entries with key_prefix {} have been deleted from the cache'.format(
