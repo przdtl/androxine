@@ -7,7 +7,6 @@ COPY ./androxine/package.json .
 RUN npm i
 
 COPY ./androxine .
-COPY ./.env.prod .env
 
 RUN npm run build
 

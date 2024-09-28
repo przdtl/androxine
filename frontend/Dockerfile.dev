@@ -7,7 +7,6 @@ COPY ./androxine/package.json .
 RUN npm i
 
 COPY ./androxine .
-COPY ./.env.dev .env
 
 EXPOSE 3000
 
