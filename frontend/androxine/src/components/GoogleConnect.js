@@ -40,7 +40,7 @@ export default function GoogleConnect({
 	type = 'button'
 }) {
 	const GoogleLoginHandle = () => {
-		window.location.href = 'http://127.0.0.1:8000/auth/oauth/login/google-oauth2/';
+		window.location.href = process.env.REACT_APP_BACKEND_API_URL + 'auth/oauth/login/google-oauth2/';
 	};
 
 	return (

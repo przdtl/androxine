@@ -36,7 +36,7 @@ export default function SignInPage() {
     function handleSubmit(event) {
         event.preventDefault();
         const form_data = new FormData(event.currentTarget);
-        axios.post('http://127.0.0.1:8000/auth/signin/', form_data, {
+        axios.post(process.env.REACT_APP_BACKEND_API_URL + 'auth/signin/', form_data, {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",

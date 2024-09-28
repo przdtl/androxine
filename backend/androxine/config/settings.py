@@ -40,8 +40,8 @@ FRONTEND_URL = '{}://{}:{}'.format(
     FRONTEND_PORT
 )
 
-ALLOWED_HOSTS = ['127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:3000']
+ALLOWED_HOSTS = [FRONTEND_DOMAIN]
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
 
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
@@ -49,7 +49,7 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CORS_ALLOW_CREDENTIALS = True
 CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 CORS_ALLOWED_ORIGINS = [
-    'http://127.0.0.1:3000',
+    FRONTEND_URL,
 ]
 
 # Application definition
@@ -182,29 +182,23 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'console'
         },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': 'debug.log'
-        }
     },
     'loggers': {
         '': {
             'level': LOGLEVEL,
-            'handlers': ['file', 'console']
+            'handlers': ['console']
         },
         'django': {
             'level': 'DEBUG',
-            'handlers': ['file', 'console']
+            'handlers': ['console']
         },
         'django.db.backends': {
             'level': 'INFO',
-            'handlers': ['file', 'console']
+            'handlers': ['console']
         },
         'django.utils.autoreload': {
             'level': 'WARNING',
-            'handlers': ['file', 'console']
+            'handlers': ['console']
         },
     }
 }

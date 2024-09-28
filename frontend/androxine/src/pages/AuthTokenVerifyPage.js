@@ -29,7 +29,7 @@ export const AuthTokenVerifyPage = () => {
     const token = searchParams.get('token');
 
     function activateAccount() {
-        axios.get(`http://127.0.0.1:8000/auth/activate/${user_id}/${token}`)
+        axios.get(process.env.REACT_APP_BACKEND_API_URL + `auth/activate/${user_id}/${token}`)
             .then(response => {
                 console.log(response.data);
                 console.log(response.status);

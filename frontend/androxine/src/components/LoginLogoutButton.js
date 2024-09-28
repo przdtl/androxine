@@ -22,7 +22,7 @@ export default function LoginLogoutButton({
     function handleLogout() {
         axios({
             method: 'post',
-            url: 'http://127.0.0.1:8000/auth/signout/',
+            url: process.env.REACT_APP_BACKEND_API_URL + 'auth/signout/',
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",

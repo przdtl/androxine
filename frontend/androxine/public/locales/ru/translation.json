@@ -96,5 +96,21 @@
         "back_to_homepage": "Вернуться на главную страницу",
         "header": "Упс! Страница Не найдена",
         "text": "Извините, но страница, которую вы ищете, не существует, была удалена, название изменено или временно недоступна"
+    },
+    "exercises_page": {
+        "search_button_label": "Поиск",
+        "exercise_name_label": "Название",
+        "header": "Упражнения",
+        "categories": "Категорий",
+        "empty_table_message": "Не было загружено ни одного упражнения",
+        "alerts": {
+            "warning": {
+                "exercise_loading_error": "Ошибка при получении упражнений",
+                "category_loading_error": "Ошибка при получении категорий"
+            }
+        }
+    },
+    "top_bottom_pagination": {
+        "show_more": "Показать ещё"
     }
 }

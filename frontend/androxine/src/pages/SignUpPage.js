@@ -41,7 +41,7 @@ export default function SignUpPage() {
             return;
         }
         const form_data = new FormData(event.currentTarget);
-        axios.post('http://127.0.0.1:8000/auth/signup/', form_data, {
+        axios.post(process.env.REACT_APP_BACKEND_API_URL + 'auth/signup/', form_data, {
             headers: {
                 "Accept-Language": i18n.language,
             }

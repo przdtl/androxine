@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     }, [isAuth]);
 
     const getCSRF = () => {
-        axios.get('http://127.0.0.1:8000/auth/csrf/', { withCredentials: true })
+        axios.get(process.env.REACT_APP_BACKEND_API_URL + 'auth/csrf/', { withCredentials: true })
             .then((res) => {
                 const token = res.headers.get('X-CSRFToken');
                 setCsrfToken(token);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const getSession = () => {
-        axios.get('http://127.0.0.1:8000/auth/me/', { withCredentials: true })
+        axios.get(process.env.REACT_APP_BACKEND_API_URL + 'auth/me/', { withCredentials: true })
             .then(response => {
                 console.log(response);
                 login(response.data);

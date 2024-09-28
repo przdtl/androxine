@@ -40,8 +40,6 @@ export const App = () => {
     [locale],
   );
 
-  // Theme = responsiveFontSizes(Theme, { breakpoints: ['xs', 'sm', 'md', 'lg', 'xl'], factor: 4 });
-
   return (
     <>
       <ThemeProvider theme={theme} >

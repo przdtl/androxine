@@ -4,8 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+
 
 export default function Search({
   value,
@@ -22,10 +21,6 @@ export default function Search({
         id="search"
         placeholder={t('inputs.search.placeholder')}
         sx={{ flexGrow: 1 }}
-        startAdornment={<InputAdornment position="start" sx={{ color: 'text.primary' }} />}
-      // inputProps={{
-      //   'aria-label': 'search',
-      // }}
       />
     </FormControl >
   );

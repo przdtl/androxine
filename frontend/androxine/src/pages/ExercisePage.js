@@ -87,7 +87,7 @@ export default function ExercisePage() {
 
     const handleGetCategories = () => {
         axios({
-            url: 'http://127.0.0.1:8000/exercise/category/',
+            url: process.env.REACT_APP_BACKEND_API_URL + 'exercise/category/',
             method: 'get',
             headers: {
                 "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export default function ExercisePage() {
                 setCategories(response.data.results);
             })
             .catch(error => {
-                enqueueSnackbar(t('ошибка получения категорий'), {
+                enqueueSnackbar(t('exercises_page.alerts.warning.category_loading_error'), {
                     variant: 'warning',
                     preventDuplicate: true,
                 });
@@ -108,7 +108,7 @@ export default function ExercisePage() {
 
     const handleGetExercises = () => {
         axios({
-            url: 'http://127.0.0.1:8000/exercise/',
+            url: process.env.REACT_APP_BACKEND_API_URL + 'exercise/',
             params: {
                 name: searchExerciseName,
                 category: selectedCategories.join(),
@@ -129,7 +129,7 @@ export default function ExercisePage() {
                 setIsOverwriteExercises(true);
             })
             .catch(error => {
-                enqueueSnackbar(t('exercises_page.alerts.warning.loading_error'), {
+                enqueueSnackbar(t('exercises_page.alerts.warning.exercise_loading_error'), {
                     variant: 'warning',
                     preventDuplicate: true,
                 });

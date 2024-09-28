@@ -1,0 +1,5 @@
+services:
+  react_app:
+    depends_on:
+      drf_app:
+        condition: service_started

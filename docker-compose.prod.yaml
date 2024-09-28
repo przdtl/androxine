@@ -1,13 +1,14 @@
 include:
   # backend
   - path:
-      - ./compose/backend.compose.common.app.yaml
-      - ./compose/backend.compose.common.db.yaml
-      - ./compose/backend.compose.common.celery.yaml
-      - ./compose/backend.compose.common.elasticsearch.yaml
-      - ./compose/backend.compose.prod.override.yaml
+      - ./backend/compose/backend.compose.common.app.yaml
+      - ./backend/compose/backend.compose.common.db.yaml
+      - ./backend/compose/backend.compose.common.celery.yaml
+      - ./backend/compose/backend.compose.common.elasticsearch.yaml
+      - ./backend/compose/backend.compose.prod.override.yaml
 
   # frontend
   - path:
-      - ./compose/frontend.compose.common.app.yaml
-      - ./compose/frontend.compose.prod.override.yaml
+      - ./frontend/compose/frontend.compose.common.app.yaml
+      - ./frontend/compose/frontend.compose.prod.override.yaml
+      - ./compose/docker-compose.prod.override.yaml
