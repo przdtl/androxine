@@ -21,6 +21,11 @@ class Weight(models.Model):
     )
     body_weight = models.FloatField()
 
+    description = models.TextField(
+        blank=True,
+        default='',
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -34,10 +39,26 @@ class Weight(models.Model):
     def save(self, *args, **kwargs) -> None:
         try:
             today_weight = self.__class__.objects.get(
-                date=datetime.date.today())
+                date=datetime.date.today(),
+                user=self.user,
+            )
         except self.__class__.DoesNotExist:
             pass
         else:
             today_weight.delete()
 
         return super().save(*args, **kwargs)
+
+
+class UserWorkoutSettings(models.Model):
+    user = models.OneToOneField(
+        'authenticate.user',
+        on_delete=models.CASCADE,
+        related_name='weight_settings',
+        primary_key=True,
+    )
+    started_weight = models.FloatField()
+    desired_weight = models.FloatField()
+
+    def __str__(self) -> str:
+        return '{}:{}-{}'.format(self.user, self.started_weight, self.desired_weight)
