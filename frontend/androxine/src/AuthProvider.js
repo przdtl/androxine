@@ -29,7 +29,6 @@ export const AuthProvider = ({ children }) => {
             .then((res) => {
                 const token = res.headers.get('X-CSRFToken');
                 setCsrfToken(token);
-                console.log(`csrf token :${token}`);
             })
             .catch(err => { console.error(err) })
     };
@@ -37,7 +36,6 @@ export const AuthProvider = ({ children }) => {
     const getSession = () => {
         axios.get(process.env.REACT_APP_BACKEND_API_URL + 'auth/me/', { withCredentials: true })
             .then(response => {
-                console.log(response);
                 login(response.data);
                 getCSRF();
             })

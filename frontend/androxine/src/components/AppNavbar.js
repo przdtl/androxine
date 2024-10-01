@@ -59,7 +59,7 @@ export default function AppNavbar() {
         >
           <Stack direction="row" spacing={1} sx={{ justifyContent: 'center' }}>
           </Stack>
-          <MenuButton aria-label="menu" onClick={toggleDrawer(true)}>
+          <MenuButton aria-label="menu" onClick={toggleDrawer(true)} sx={{ border: '1px solid', borderColor: 'hsl(220, 20%, 88%)' }}>
             <MenuRoundedIcon />
           </MenuButton>
           <SideMenuMobile open={open} toggleDrawer={toggleDrawer} />

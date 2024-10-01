@@ -229,7 +229,7 @@ export const inputsCustomizations = {
         fontWeight: theme.typography.fontWeightMedium,
         letterSpacing: 0,
         color: theme.palette.text.primary,
-        border: '1px solid ',
+        // border: '1px solid ',
         borderColor: gray[200],
         backgroundColor: alpha(gray[50], 0.3),
         '&:hover': {
@@ -412,9 +412,9 @@ export const inputsCustomizations = {
             props: {
               size: 'medium',
             },
-            style: {
-              height: '2.5rem',
-            },
+            // style: {
+            //   height: '2.5rem',
+            // },
           },
         ],
       }),

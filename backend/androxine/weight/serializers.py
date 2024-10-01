@@ -10,14 +10,14 @@ class WeightCreateSwaggerSerializer(serializers.ModelSerializer):
         fields = ['body_weight', 'description']
 
 
-class ReadWeightSerializer(serializers.ModelSerializer):
+class WeightRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
     class Meta:
         model = Weight
         fields = '__all__'
         read_only_fields = ['id', 'user', 'date']
 
 
-class WriteWeightSerializer(serializers.ModelSerializer):
+class WeightListCreateSerializer(serializers.ModelSerializer):
     user = serializers.UUIDField(
         source='user_id',
         required=False,
@@ -31,27 +31,34 @@ class WriteWeightSerializer(serializers.ModelSerializer):
             field for field in fields if field not in ('body_weight', 'description')]
 
 
+class WeightTableListSerializer(serializers.Serializer):
+    labels = serializers.ListField(
+        child=serializers.DateField(),
+    )
+    values = serializers.ListField()
+
+
 class UserWorkoutSettingsCreateSwaggerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserWorkoutSettings
-        fields = ['started_weight', 'desired_weight']
+        model= UserWorkoutSettings
+        fields= ['started_weight', 'desired_weight']
 
 
 class UserWorkoutSettingsRetrieveUpdateDestroySerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserWorkoutSettings
-        fields = '__all__'
-        read_only_fields = ['user']
+        model= UserWorkoutSettings
+        fields= '__all__'
+        read_only_fields= ['user']
 
 
 class UserWorkoutSettingsCreateSerializer(serializers.ModelSerializer):
-    user = serializers.UUIDField(
-        source='user_id',
-        required=False,
-        help_text='this field is calculated automatically based on the data of the logged-in user',
-        validators=[UniqueValidator(UserWorkoutSettings.objects.all())]
+    user= serializers.UUIDField(
+        source = 'user_id',
+        required = False,
+        help_text = 'this field is calculated automatically based on the data of the logged-in user',
+        validators = [UniqueValidator(UserWorkoutSettings.objects.all())]
     )
 
     class Meta:
-        model = UserWorkoutSettings
-        fields = '__all__'
+        model= UserWorkoutSettings
+        fields= '__all__'

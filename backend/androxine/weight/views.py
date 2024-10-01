@@ -1,13 +1,22 @@
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, ListCreateAPIView, CreateAPIView
+import datetime
+
+from rest_framework.generics import (
+    CreateAPIView,
+    GenericAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
+from rest_framework.response import Response
 
 from drf_yasg.utils import swagger_auto_schema
 
 from weight.models import Weight, UserWorkoutSettings
 from weight.serializers import (
-    ReadWeightSerializer,
-    WriteWeightSerializer,
+    WeightTableListSerializer,
+    WeightListCreateSerializer,
     WeightCreateSwaggerSerializer,
     UserWorkoutSettingsCreateSerializer,
+    WeightRetrieveUpdateDestroySerializer,
     UserWorkoutSettingsCreateSwaggerSerializer,
     UserWorkoutSettingsRetrieveUpdateDestroySerializer,
 )
@@ -16,16 +25,16 @@ from config.utils import CustomGetObjectMixin, UpdateRequestManager, methods_dec
 
 
 class WeightListCreateView(ListCreateAPIView):
-    serializer_class = WriteWeightSerializer
+    serializer_class = WeightListCreateSerializer
 
     def get_queryset(self):
         return Weight.objects.filter(
             user=self.request.user
-        )
+        ).order_by('-date')
 
     @swagger_auto_schema(
         request_body=WeightCreateSwaggerSerializer,
-        responses={201: WriteWeightSerializer},
+        responses={201: WeightListCreateSerializer},
     )
     def post(self, request, *args, **kwargs):
         with UpdateRequestManager(request.data):
@@ -35,10 +44,40 @@ class WeightListCreateView(ListCreateAPIView):
 
 
 class WeightRetrieveUpdateDestroyView(CustomGetObjectMixin, RetrieveUpdateDestroyAPIView):
-    serializer_class = ReadWeightSerializer
+    serializer_class = WeightRetrieveUpdateDestroySerializer
     queryset = Weight.objects.all()
     shadow_user_lookup_field = 'user'
     http_method_names = ['get', 'patch', 'delete']
+
+
+class WeightTableListView(GenericAPIView):
+    serializer_class = WeightTableListSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        user_weight_querset = Weight.objects.filter(
+            user=self.request.user
+        )
+        first_weight_record = Weight.objects.order_by('date').first()
+        first_weight_record_date = first_weight_record.date
+        dates_range = 1 + int(
+            (datetime.date.today() - first_weight_record_date).days
+        )
+        labels = [
+            first_weight_record_date + datetime.timedelta(days=idx) for idx in range(dates_range)
+        ]
+        values = user_weight_querset.order_by(
+            'date').values('body_weight', 'date')
+
+        return {
+            "labels": labels,
+            "values": values,
+        }
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_queryset()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class UserWorkoutSettingsCreateView(CreateAPIView):

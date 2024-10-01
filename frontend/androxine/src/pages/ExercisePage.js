@@ -55,7 +55,7 @@ export default function ExercisePage() {
     const [isAscendingNames, setIsAscendingNames] = React.useState(true);
     const [selectedCategories, setSelectedCategory] = React.useState([]);
     const [searchExerciseName, setSearchExerciseName] = React.useState('');
-    const [exercisePageCount, setExercisePageCount] = React.useState(10);
+    const [exercisePageCount, setExercisePageCount] = React.useState(1);
     const [exerciseCurrentPage, setExerciseCurrentPage] = React.useState(1);
     const [exerciseNextPage, setExerciseNextPage] = React.useState(null);
     const [isOverwriteExercises, setIsOverwriteExercises] = React.useState(true);

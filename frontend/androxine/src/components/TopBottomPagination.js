@@ -8,11 +8,11 @@ import Pagination from '@mui/material/Pagination';
 
 
 export default function TopBottomPagination({
-    children,
-    handleChangePage,
-    handleShowMore,
     page,
-    page_count = 8,
+    children,
+    handleShowMore,
+    handleChangePage,
+    page_count = 1,
     next_page = null,
 }) {
     const { t } = useTranslation();
