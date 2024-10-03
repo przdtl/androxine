@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
@@ -6,11 +6,11 @@ import colorLib from '@kurkle/color';
 
 import { useSnackbar } from 'notistack'
 
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 
 import { useTranslation } from "react-i18next";
 
-import { styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 import Table from '@mui/material/Table';
 import Stack from '@mui/material/Stack';
@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import Grid2 from '@mui/material/Grid2';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import FormLabel from '@mui/material/FormLabel';
@@ -29,15 +30,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TableContainer from '@mui/material/TableContainer';
-import Divider, { dividerClasses } from '@mui/material/Divider';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 
-import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import AddIcon from '@mui/icons-material/Add';
 import SyncIcon from '@mui/icons-material/Sync';
@@ -54,7 +50,7 @@ import TopBottomPagination from '../components/TopBottomPagination';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
-const MAX_WEIGHT_CHART_VALUE = 200;
+const MAX_WEIGHT_CHART_VALUE = 350;
 const MIN_WEIGHT_CHART_VALUE = 0;
 
 function CreateWeightDialog({
@@ -84,7 +80,7 @@ function CreateWeightDialog({
             <DialogContent>
                 <Stack spacing={1}>
                     <Stack spacing={1}>
-                        <FormLabel>Дата</FormLabel>
+                        <FormLabel>{t("weight_page.date_label")}</FormLabel>
                         <LocalizationProvider dateAdapter={AdapterLuxon} adapterLocale={i18n.language}>
                             <MobileDatePicker
                                 maxDate={DateTime.now()}
@@ -96,7 +92,7 @@ function CreateWeightDialog({
                         </LocalizationProvider>
                     </Stack>
                     <FormControl>
-                        <FormLabel>Вес</FormLabel>
+                        <FormLabel>{t("weight_page.weight_label")}</FormLabel>
                         <TextField
                             fullWidth
                             name='body_weight'
@@ -106,7 +102,7 @@ function CreateWeightDialog({
                         />
                     </FormControl>
                     <FormControl>
-                        <FormLabel>Описание</FormLabel>
+                        <FormLabel>{t("weight_page.description_label")}</FormLabel>
                         <TextField
                             fullWidth
                             multiline
@@ -119,11 +115,11 @@ function CreateWeightDialog({
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Закрыть</Button>
+                <Button onClick={handleClose}>{t("weight_page.dialog.close")}</Button>
                 <Button
                     type="submit"
                 >
-                    Добавить</Button>
+                    {t("weight_page.dialog.add")}</Button>
             </DialogActions>
         </Dialog>
     );
@@ -140,6 +136,8 @@ function ChangeWeightDialog({
     handleSubmit,
     handleDelete,
 }) {
+    const { i18n, t } = useTranslation();
+
     return (
         <Dialog
             open={open}
@@ -153,7 +151,7 @@ function ChangeWeightDialog({
             <DialogContent>
                 <Stack spacing={1}>
                     <FormControl>
-                        <FormLabel>Вес</FormLabel>
+                        <FormLabel>{t("weight_page.weight_label")}</FormLabel>
                         <TextField
                             fullWidth
                             name='body_weight'
@@ -163,7 +161,7 @@ function ChangeWeightDialog({
                         />
                     </FormControl>
                     <FormControl>
-                        <FormLabel>Описание</FormLabel>
+                        <FormLabel>{t("weight_page.description_label")}</FormLabel>
                         <TextField
                             fullWidth
                             multiline
@@ -179,12 +177,12 @@ function ChangeWeightDialog({
                 <IconButton size='small' onClick={() => handleDelete(weightObject.id)}>
                     <DeleteIcon color='error' fontSize='small' />
                 </IconButton>
-                <Button onClick={handleClose}>Закрыть</Button>
+                <Button onClick={handleClose}>{t("weight_page.dialog.close")}</Button>
                 <Button
                     type="submit"
                     {...(weightObject.body_weight == weightValue && weightObject.description == weightDescription ? { disabled: true } : {})}
                 >
-                    Сохранить</Button>
+                    {t("weight_page.dialog.update")}</Button>
             </DialogActions>
         </Dialog>
     );
@@ -194,8 +192,8 @@ export default function WeightPage() {
     // chart started and desired value states
     const [dynamicStartedWeight, setDynamicStartedWeight] = useState();
     const [dynamicDesiredWeight, setDynamicDesiredWeight] = useState();
-    const [staticStartedWeight, setStaticStartedWeight] = useState();
-    const [staticDesiredWeight, setStaticDesiredWeight] = useState();
+    const [staticStartedWeight, setStaticStartedWeight] = useState(null);
+    const [staticDesiredWeight, setStaticDesiredWeight] = useState(null);
 
     // weight list page states
     const [weightPageCount, setWeightPageCount] = React.useState(1);
@@ -205,17 +203,16 @@ export default function WeightPage() {
 
     const [userWeightSettingsIsPresent, setUserWeightSettingsIsPresent] = useState(false);
     const [weightLabels, setWeightLabels] = useState([]);
-    const [weightTableData, setWeightTableData] = useState([]);
+    const [weightTableData, setWeightTableData] = useState();
     const [weightList, setWeightList] = useState([]);
 
     // change weight record states
     const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-    const [changableWeightDateInput, setChangableWeightDateInput] = useState();
+    const [changableWeightDateInput, setChangableWeightDateInput] = useState(DateTime.now());
     const [changableWeightValueInput, setChangableWeightValueInput] = useState();
     const [changableWeightDescriptionInput, setChangableWeightDescriptionInput] = useState();
     const [changableWeightRecord, setChangableWeightRecord] = useState({});
-
 
     const { csrfToken } = useAuth();
 
@@ -240,16 +237,13 @@ export default function WeightPage() {
 
     const handleCloseCreateDialog = (e) => {
         setIsCreateDialogOpen(false);
-        setChangableWeightDateInput();
+        setChangableWeightDateInput(DateTime.now());
         setChangableWeightValueInput();
         setChangableWeightDescriptionInput();
     };
 
     const handleOpenCreateDialog = () => {
         setIsCreateDialogOpen(true);
-        setChangableWeightDateInput();
-        setChangableWeightValueInput()
-        setChangableWeightDescriptionInput();
     };
 
     const handleDeleteWeightRecord = (weight_record_id) => {
@@ -269,7 +263,10 @@ export default function WeightPage() {
                 handleGetTableWeight();
             })
             .catch(error => {
-
+                enqueueSnackbar(t('weight_page.alerts.warning.delete_weight_record_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     };
 
@@ -293,7 +290,10 @@ export default function WeightPage() {
                 handleGetTableWeight();
             })
             .catch(error => {
-
+                enqueueSnackbar(t('weight_page.alerts.warning.update_weight_record_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     };
 
@@ -319,7 +319,10 @@ export default function WeightPage() {
                 handleGetTableWeight();
             })
             .catch(error => {
-
+                enqueueSnackbar(t('weight_page.alerts.warning.create_weight_record_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     }
 
@@ -338,7 +341,7 @@ export default function WeightPage() {
         return {};
     }
 
-    const handleSetWorkoutSettings = () => {
+    const handleSetWeightSettings = () => {
         let url = 'weight/settings/me/';
         let method = 'patch';
         if (!userWeightSettingsIsPresent) {
@@ -352,6 +355,7 @@ export default function WeightPage() {
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRFToken": csrfToken,
+                "Accept-Language": i18n.language,
             },
             data: {
                 started_weight: dynamicStartedWeight,
@@ -365,16 +369,22 @@ export default function WeightPage() {
             })
             .catch(error => {
                 setUserWeightSettingsIsPresent(false);
+                enqueueSnackbar(t('weight_page.alerts.warning.set_weight_settings_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     };
 
-    const handleGetWorkoutSettings = () => {
+    const handleGetWeightSettings = () => {
         axios({
             url: process.env.REACT_APP_BACKEND_API_URL + 'weight/settings/me/',
             method: 'get',
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+                "Accept-Language": i18n.language,
             },
         })
             .then(response => {
@@ -383,28 +393,32 @@ export default function WeightPage() {
                 setUserWeightSettingsIsPresent(true);
             })
             .catch(error => {
-                setStaticStartedWeight();
-                setStaticDesiredWeight();
+                setStaticStartedWeight(null);
+                setStaticDesiredWeight(null);
                 setUserWeightSettingsIsPresent(false);
+                if (!error.response) {
+                    return;
+                }
+                if (error.response.status == 404) {
+                    return;
+                }
+                enqueueSnackbar(t('weight_page.alerts.warning.get_weight_settings_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     };
 
-    const handleChangeStartedWeight = (event) => {
-        let value = parseInt(event.target.value);
+    const getWeightValidateValue = (event) => {
+        let value = parseFloat(event.target.value);
+
+        if (isNaN(value)) return undefined;
 
         if (value > MAX_WEIGHT_CHART_VALUE) value = MAX_WEIGHT_CHART_VALUE;
         if (value < MIN_WEIGHT_CHART_VALUE) value = MIN_WEIGHT_CHART_VALUE;
 
-        setDynamicStartedWeight(value);
-    };
+        return Math.floor((value + Number.EPSILON) * 10) / 10;
 
-    const handleChangeDesiredWeight = (event) => {
-        let value = parseInt(event.target.value);
-
-        if (value > MAX_WEIGHT_CHART_VALUE) value = MAX_WEIGHT_CHART_VALUE;
-        if (value < MIN_WEIGHT_CHART_VALUE) value = MIN_WEIGHT_CHART_VALUE;
-
-        setDynamicDesiredWeight(value);
     };
 
     const handleChangePage = (event, value) => {
@@ -417,8 +431,8 @@ export default function WeightPage() {
     };
 
     const handleResetWorkoutSettings = () => {
-        setDynamicStartedWeight(staticStartedWeight);
-        setDynamicDesiredWeight(staticDesiredWeight);
+        setDynamicStartedWeight(staticStartedWeight ? staticStartedWeight : '');
+        setDynamicDesiredWeight(staticDesiredWeight ? staticDesiredWeight : '');
     };
 
     const convertWeightTableResponseDataToChartData = (response_table_data) => {
@@ -432,14 +446,32 @@ export default function WeightPage() {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+                "Accept-Language": i18n.language,
             },
         })
             .then(response => {
-                setWeightLabels(response.data.labels);
+                const labels = response.data.labels;
+                const new_labels = [...[DateTime.fromISO(labels[0]).plus({ days: -1 }).toISODate()], ...labels, ...[DateTime.fromISO(labels[labels.length - 1]).plus({ days: 1 }).toISODate()]];
+                setWeightLabels(new_labels);
                 setWeightTableData(convertWeightTableResponseDataToChartData(response.data.values));
             })
             .catch(error => {
-
+                const intervals = Interval.fromDateTimes(
+                    DateTime.now().plus({ days: -1 }).startOf("day"),
+                    DateTime.now().plus({ days: 1 }).endOf("day")
+                ).splitBy({ day: 1 }).map(date => date.start.toISODate());
+                setWeightLabels(intervals);
+                if (!error.response) {
+                    return;
+                }
+                if (error.response.status == 404) {
+                    return;
+                }
+                enqueueSnackbar(t('weight_page.alerts.warning.get_table_weight_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     };
 
@@ -450,13 +482,27 @@ export default function WeightPage() {
             withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken,
+                "Accept-Language": i18n.language,
             },
+            params: {
+                page: weightCurrentPage,
+            }
         })
             .then(response => {
-                setWeightList(response.data.results);
+                const data = response.data;
+
+                setWeightList(isOverwriteWeights ? data.results : (weightList) => [...weightList, ...data.results]);
+                setWeightPageCount(data.total_pages);
+                setWeightNextPage(data.links.next);
+                setIsOverwriteWights(true);
             })
             .catch(error => {
                 setWeightList();
+                enqueueSnackbar(t('weight_page.alerts.warning.get_weight_error'), {
+                    variant: 'warning',
+                    preventDuplicate: true,
+                });
             });
     };
 
@@ -498,20 +544,24 @@ export default function WeightPage() {
     };
 
     const getMonthDayDate = (iso_date) => {
-        const date = DateTime.fromISO(iso_date);
+        const date = DateTime.fromISO(iso_date, { locale: i18n.language });
 
         return `${date.monthLong} ${date.day}`;
+    };
+
+    const isSaveWeightSettingsButton = () => {
+
     };
 
     useEffect(() => {
         handleGetWeight();
         handleGetTableWeight();
-        handleGetWorkoutSettings();
+        handleGetWeightSettings();
     }, []);
 
     useEffect(() => {
         handleGetWeight();
-        handleGetTableWeight();
+        // handleGetTableWeight();
     }, [weightCurrentPage,]);
 
     useEffect(() => {
@@ -523,7 +573,7 @@ export default function WeightPage() {
         datasets: [
             {
                 type: 'line',
-                label: 'Weight',
+                label: t('weight_page.chart.weight_line_label'),
                 borderColor: 'rgb(255, 99, 132)',
                 backgroundColor: colorLib('rgb(255, 99, 132)').alpha(0.5).rgbString(),
                 tension: 0.2,
@@ -535,33 +585,36 @@ export default function WeightPage() {
             },
             {
                 type: 'line',
-                label: 'Start',
+                label: t('weight_page.chart.started_line_label'),
                 borderColor: 'rgb(75, 192, 192)',
                 borderDash: [5, 5],
                 borderWidth: 2,
                 pointStyle: false,
-                data: weightTableData.map((data) => ({ x: data.x, y: dynamicStartedWeight })),
+                data: dynamicStartedWeight ? weightLabels.map((data) => ({ x: data, y: dynamicStartedWeight })) : undefined,
             },
             {
                 type: 'line',
-                label: 'Goal',
+                label: t('weight_page.chart.desired_line_label'),
                 borderColor: 'rgb(54, 162, 235)',
                 borderDash: [5, 5],
                 borderWidth: 2,
                 pointStyle: false,
-                data: weightLabels.map((data) => ({ x: data, y: dynamicDesiredWeight })),
+                data: dynamicDesiredWeight ? weightLabels.map((data) => ({ x: data, y: dynamicDesiredWeight })) : undefined,
             },
         ],
     };
 
     return (
         <>
+            <h1>
+                {t('weight_page.header')}
+            </h1>
             <Grid2 container spacing={2} columns={12}>
                 <Grid2 size={{ md: 12, lg: 9 }}>
                     <LinearDateChart
                         data={data}
-                        x_min_value={weightLabels[0]}
-                        x_max_value={weightLabels[weightLabels.length - 1]}
+                        x_zoom_min={DateTime.fromISO(weightLabels[0]).valueOf()}
+                        x_zoom_max={DateTime.fromISO(weightLabels[weightLabels.length - 1]).valueOf()}
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, lg: 3 }}>
@@ -577,31 +630,31 @@ export default function WeightPage() {
                         </Button>
                         <Divider />
                         <FormControl>
-                            <FormLabel>Стартовый вес</FormLabel>
+                            <FormLabel>{t('weight_page.chart.started_line_label')}</FormLabel>
                             <TextField
                                 type='number'
                                 variant="outlined"
                                 value={dynamicStartedWeight}
-                                onChange={handleChangeStartedWeight}
+                                onChange={e => setDynamicStartedWeight(getWeightValidateValue(e))}
                             />
                         </FormControl>
                         <FormControl>
-                            <FormLabel>Желанный вес</FormLabel>
+                            <FormLabel>{t('weight_page.chart.desired_line_label')}</FormLabel>
                             <TextField
                                 type='number'
                                 variant="outlined"
                                 value={dynamicDesiredWeight}
-                                onChange={handleChangeDesiredWeight}
+                                onChange={e => setDynamicDesiredWeight(getWeightValidateValue(e))}
                             />
                         </FormControl>
                         <Stack direction="row" spacing={1}>
                             <Button
                                 type="submit"
                                 fullWidth
-                                onClick={handleSetWorkoutSettings}
-                                {...(!(dynamicStartedWeight && dynamicDesiredWeight) ? { disabled: true, variant: "outlined" } : { variant: "contained" })}
+                                onClick={handleSetWeightSettings}
+                                {...((!(dynamicStartedWeight && dynamicDesiredWeight) || (dynamicStartedWeight == staticStartedWeight && dynamicDesiredWeight == staticDesiredWeight)) ? { disabled: true, variant: "outlined" } : { variant: "contained" })}
                             >
-                                Сохранить
+                                {t('weight_page.chart.save_button_label')}
                             </Button>
                             <IconButton
                                 sx={{ border: '1px solid' }}
@@ -631,7 +684,7 @@ export default function WeightPage() {
                                 <TableBody>
                                     {!weightList.length &&
                                         <Typography sx={{ m: 1 }}>
-                                            {t('exercises_page.empty_table_message')}
+                                            {t('weight_page.empty_table_message')}
                                         </Typography>
                                     }
                                     {weightList.map((weight_record, index) => (
@@ -683,7 +736,7 @@ export default function WeightPage() {
                 weightObject={changableWeightRecord}
                 weightValue={changableWeightValueInput}
                 weightDescription={changableWeightDescriptionInput}
-                handleChangeWeightValue={e => setChangableWeightValueInput(e.target.value)}
+                handleChangeWeightValue={e => setChangableWeightValueInput(getWeightValidateValue(e))}
                 handleChangeWeightDescription={e => setChangableWeightDescriptionInput(e.target.value)}
                 handleDelete={handleDeleteWeightRecord}
                 handleSubmit={handleUpdateWeightRecord}
@@ -694,7 +747,7 @@ export default function WeightPage() {
                 weightValue={changableWeightValueInput}
                 weightDescription={changableWeightDescriptionInput}
                 handleChangeWeightDate={value => setChangableWeightDateInput(value)}
-                handleChangeWeightValue={e => setChangableWeightValueInput(e.target.value)}
+                handleChangeWeightValue={e => setChangableWeightValueInput(getWeightValidateValue(e))}
                 handleChangeWeightDescription={e => setChangableWeightDescriptionInput(e.target.value)}
                 handleClose={handleCloseCreateDialog}
                 handleSubmit={handleCreateWeightRecord}

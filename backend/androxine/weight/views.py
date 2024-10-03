@@ -1,5 +1,7 @@
 import datetime
 
+from django.http import Http404
+
 from rest_framework.generics import (
     CreateAPIView,
     GenericAPIView,
@@ -57,8 +59,11 @@ class WeightTableListView(GenericAPIView):
     def get_queryset(self):
         user_weight_querset = Weight.objects.filter(
             user=self.request.user
-        )
-        first_weight_record = Weight.objects.order_by('date').first()
+        ).order_by('date')
+        first_weight_record = user_weight_querset.first()
+        if not first_weight_record:
+            raise Http404
+        
         first_weight_record_date = first_weight_record.date
         dates_range = 1 + int(
             (datetime.date.today() - first_weight_record_date).days
@@ -66,8 +71,7 @@ class WeightTableListView(GenericAPIView):
         labels = [
             first_weight_record_date + datetime.timedelta(days=idx) for idx in range(dates_range)
         ]
-        values = user_weight_querset.order_by(
-            'date').values('body_weight', 'date')
+        values = user_weight_querset.values('body_weight', 'date')
 
         return {
             "labels": labels,

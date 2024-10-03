@@ -19,7 +19,10 @@ class Weight(models.Model):
     date = models.DateField(
         default=datetime.date.today
     )
-    body_weight = models.FloatField()
+    body_weight = models.DecimalField(
+        max_digits=4,
+        decimal_places=1,
+    )
 
     description = models.TextField(
         blank=True,
@@ -39,7 +42,7 @@ class Weight(models.Model):
     def save(self, *args, **kwargs) -> None:
         try:
             today_weight = self.__class__.objects.get(
-                date=datetime.date.today(),
+                date=self.date,
                 user=self.user,
             )
         except self.__class__.DoesNotExist:

@@ -112,5 +112,34 @@
     },
     "top_bottom_pagination": {
         "show_more": "Показать ещё"
+    },
+    "weight_page": {
+        "date_label": "Дата",
+        "weight_label": "Вес",
+        "description_label": "Описание",
+        "header": "Вес",
+        "empty_table_message": "Не было загружено ни одной записи",
+        "dialog": {
+            "close": "Закрыть",
+            "add": "Добавить",
+            "update": "Сохранить"
+        },
+        "chart": {
+            "started_line_label": "Стартовый вес",
+            "desired_line_label": "Желанный вес",
+            "weight_line_label": "Вес тела",
+            "save_button_label": "Сохранить"
+        },
+        "alerts": {
+            "warning": {
+                "delete_weight_record_error": "Ошибка при удалении записи",
+                "update_weight_record_error": "Ошибка при обновлении записи",
+                "create_weight_record_error": "Ошибка при создании записи",
+                "get_weight_error": "Ошибка при получении списка записей о весе",
+                "get_table_weight_error": "Ошибка при получении данных для графика веса",
+                "set_weight_settings_error": "Ошибка при установке доп. сведений о весе",
+                "get_weight_settings_error": "Ошибка при получении доп. сведений о весе"
+            }
+        }
     }
 }

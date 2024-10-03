@@ -112,5 +112,34 @@
     },
     "top_bottom_pagination": {
         "show_more": "Show more"
+    },
+    "weight_page": {
+        "date_label": "Date",
+        "weight_label": "Weight",
+        "description_label": "Description",
+        "header": "Wight",
+        "empty_table_message": "Not a single record has been uploaded",
+        "dialog": {
+            "close": "Close",
+            "add": "Add",
+            "update": "Save"
+        },
+        "chart": {
+            "started_line_label": "Started weight",
+            "desired_line_label": "Desired weight",
+            "weight_line_label": "Body weight",
+            "save_button_label": "Save"
+        },
+        "alerts": {
+            "warning": {
+                "delete_weight_record_error": "Error deleting a record",
+                "update_weight_record_error": "Error updating the record",
+                "create_weight_record_error": "Error when creating a record",
+                "get_weight_error": "Error when getting a list of weight records",
+                "get_table_weight_error": "Error in obtaining data for the weight graph",
+                "set_weight_settings_error": "Error when setting additional weight information",
+                "get_weight_settings_error": "Error in obtaining additional weight information"
+            }
+        }
     }
 }
